@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { JWTPayload } from "../interfaces/IAuth";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -21,7 +22,7 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
     const token = authHeader.split(" ")[1];
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { userid: number; email: string; role: string };
+        const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
         req.user = decoded; 
         next();
     } catch (err) {
