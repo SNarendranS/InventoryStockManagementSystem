@@ -1,14 +1,16 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { User, UserRole } from "../models/User";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ✅ Register new user
-export const register = async (req: Request, res: Response) => {
-    const { name, email, password, role } = req.body;
+export const register = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
+        const { name, email, password, role } = req.body;
+
+        if (!name || !email || !password) return res.status(400).json({ message: "Name, email, and password are required" });
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) return res.status(400).json({ message: "User already exists." });
 
@@ -24,13 +26,12 @@ export const register = async (req: Request, res: Response) => {
             user: { userid: newUser.userid, name: newUser.name, email: newUser.email, role: newUser.role },
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error)
     }
 };
 
 // ✅ Login
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
     try {
@@ -43,7 +44,7 @@ export const login = async (req: Request, res: Response) => {
         const token = jwt.sign(
             { userid: user.userid, email: user.email, role: user.role },
             JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "1d" }
         );
 
         res.json({
@@ -51,7 +52,6 @@ export const login = async (req: Request, res: Response) => {
             user: { userid: user.userid, name: user.name, email: user.email, role: user.role },
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error)
     }
 };
