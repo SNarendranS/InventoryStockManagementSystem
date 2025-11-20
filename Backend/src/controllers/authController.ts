@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { User, UserRole } from "../models/User";
+import { User } from "../models/User";
+import { UserRole } from "../enums/EuserRoles"
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;

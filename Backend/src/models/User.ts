@@ -1,27 +1,8 @@
-// src/models/User.ts
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database";
 import bcrypt from "bcrypt";
-
-// ✅ Define possible user roles
-export enum UserRole {
-    ADMIN = "admin",
-    MANAGER = "manager",
-    EMPLOYEE = "employee",
-}
-
-interface UserAttributes {
-    userid: number;
-    name: string;
-    email: string;
-    password: string;
-    role: UserRole;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, "userid" | "createdAt" | "updatedAt"> { }
-
+import { UserAttributes, UserCreationAttributes } from "../interfaces/IUser";
+import { UserRole } from "../enums/EuserRoles";
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public userid!: number;
     public name!: string;
