@@ -4,6 +4,9 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
+import authRoutes from "../routes/authRoutes";
+import userRoutes from "../routes/userRoutes";
+
 dotenv.config();
 
 const app = express();
@@ -17,6 +20,10 @@ app.use(helmet());
 app.use(cors());                
 app.use(express.json());         
 app.use(express.urlencoded({ extended: true })); 
-app.use(limiter);         
+app.use(limiter);  
+
+const baseURI:string='/api'
+app.use(`${baseURI}/auth`, authRoutes);
+app.use(`${baseURI}/users`, userRoutes);
 
 export default app
