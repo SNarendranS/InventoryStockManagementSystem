@@ -6,6 +6,8 @@ import rateLimit from "express-rate-limit";
 
 import authRoutes from "../routes/authRoutes";
 import userRoutes from "../routes/userRoutes";
+import categoryRoutes from "../routes/categoryRoutes";
+
 import { errorHandler } from "../middlewares/errorHandler";
 
 dotenv.config();
@@ -23,11 +25,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 app.use(limiter);  
 
-
-
 const baseURI:string='/api'
 app.use(`${baseURI}/auth`, authRoutes);
-app.use(`${baseURI}/users`, userRoutes);
+app.use(`${baseURI}/user`, userRoutes);
+app.use(`${baseURI}/category`, categoryRoutes);
 
 app.use(errorHandler);
 export default app

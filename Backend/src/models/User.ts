@@ -12,13 +12,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    // ✅ Instance method to check password
     public async checkPassword(password: string): Promise<boolean> {
         return bcrypt.compare(password, this.password);
     }
 }
 
-// Initialize model
 User.init(
     {
         userid: {
