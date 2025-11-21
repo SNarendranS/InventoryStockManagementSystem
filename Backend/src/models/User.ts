@@ -9,8 +9,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     public email!: string;
     public password!: string;
     public role!: UserRole;
+    public managerid!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
 
     public async checkPassword(password: string): Promise<boolean> {
         return bcrypt.compare(password, this.password);
@@ -45,6 +47,17 @@ User.init(
             allowNull: false,
             defaultValue: UserRole.EMPLOYEE,
         },
+        managerid: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'users',
+                key: 'userid',
+            },
+            onUpdate: 'CASCADE',
+            onDelete: 'SET NULL',
+        }
+
     },
     {
         sequelize,
