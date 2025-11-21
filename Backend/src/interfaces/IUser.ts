@@ -11,15 +11,3 @@ export interface UserAttributes {
 }
 
 export interface UserCreationAttributes extends Optional<UserAttributes, "userid" | "createdAt" | "updatedAt"> { }
-interface UserResponse {
-    userid: number;
-    name: string;
-    email: string;
-    role?: UserRole;
-}
-export const UserResponseTemplate:(keyof UserResponse)[] = [
-    "userid",
-    "name",
-    "email",
-    "role",
-]
