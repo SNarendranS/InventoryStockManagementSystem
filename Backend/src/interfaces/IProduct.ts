@@ -1,5 +1,4 @@
 import { Optional } from "sequelize";
-import { Product } from "../models/Product";
 
 export interface ProductAttributes {
     productid: number;
@@ -23,23 +22,3 @@ export interface productBody {
     quantity: number,
     categoryid: number
 }
-
-interface productResponse {
-    productid: number;
-    productName: string;
-    productDescription?: string;
-    sku: string,
-    price: string,
-    quantity: number,
-    categoryid?: number
-}
-export const productResponseTemplate: (keyof productResponse)[] =
-    [
-        "productid",
-        "productName",
-        "productDescription",
-        "sku",
-        "price",
-        "quantity",
-        "categoryid"
-    ]
