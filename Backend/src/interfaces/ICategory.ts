@@ -22,18 +22,7 @@ interface categoryResponse {
     categoryDescription?: string
 }
 
-export const toCategoryResponse = (category: Category | Category[]): categoryResponse | categoryResponse[] => {
-    if (Array.isArray(category)) {
-        return category.map(c => ({
-            categoryid: c.categoryid,
-            categoryName: c.categoryName,
-            categoryDescription: c.categoryDescription
-        }));
-    }
-
-    return {
-        categoryid: category.categoryid,
-        categoryName: category.categoryName,
-        categoryDescription: category.categoryDescription
-    };
-};
+export const categoryTemplate:(keyof categoryResponse)[]=
+[
+    "categoryid","categoryName","categoryDescription"
+]
