@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "./authMiddleware";
-import { UserRole } from "../models/User";
+import { UserRole } from "../enums/EuserRoles";
 
 export const roleMiddleware = (roles: UserRole[]) => {
     return (req: AuthRequest, res: Response, next: NextFunction) => {
