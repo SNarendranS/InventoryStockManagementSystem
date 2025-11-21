@@ -4,15 +4,16 @@ import { ProductAttributes, ProductCreationAttributes } from "../interfaces/IPro
 import { Category } from "./Category";
 
 export class Product extends Model<ProductAttributes, ProductCreationAttributes> implements ProductAttributes {
-    public productid: number;
-    public productName: string;
-    public productDescription?: string;
-    public sku: string;
-    public price: string;
-    public quantity: number;
-    public categoryid: number
-    public readonly createdAt?: Date;
-    public readonly updatedAt?: Date;
+    public productid!: number;
+    public productName!: string;
+    public productDescription!: string;
+    public sku!: string;
+    public price!: string;
+    public quantity!: number;
+    public restockLevel!: number;
+    public categoryid!: number;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
 }
 
 Product.init(
@@ -63,6 +64,11 @@ Product.init(
             onUpdate: "CASCADE",
             onDelete: "CASCADE",
         },
+        restockLevel: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 10,
+        }
     },
     {
         sequelize,
