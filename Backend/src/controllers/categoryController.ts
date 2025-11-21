@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Category } from "../models/Category";
-import { categoryBody } from "../interfaces/ICategory";
 import { Product } from "../models/Product";
+import { CategoryCreationAttributes } from "../interfaces/ICategory";
 
 export const getAllCategory = async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -9,8 +9,8 @@ export const getAllCategory = async (_req: Request, res: Response, next: NextFun
             attributes: ["categoryid", "categoryName", "categoryDescription"]
         });
 
-        return res.status(200).json({ count:categories.length,categories });
-    } catch (error:unknown) {
+        return res.status(200).json({ count: categories.length, categories });
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
@@ -26,13 +26,13 @@ export const getCategoryById = async (req: Request, res: Response, next: NextFun
         }
 
         return res.status(200).json({ category });
-    } catch (error:unknown) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
 
 export const createCategory = async (
-    req: Request<{}, {}, categoryBody>,
+    req: Request<{}, {}, CategoryCreationAttributes>,
     res: Response,
     next: NextFunction
 ) => {
@@ -52,13 +52,13 @@ export const createCategory = async (
             message: "Category created successfully",
             category
         });
-    } catch (error:unknown) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
 
 export const updateCategory = async (
-    req: Request<{ categoryid: string }, {}, categoryBody>,
+    req: Request<{ categoryid: string }, {}, CategoryCreationAttributes>,
     res: Response,
     next: NextFunction
 ) => {
@@ -82,7 +82,7 @@ export const updateCategory = async (
         }
 
         return res.status(200).json({ message: "Category updated successfully" });
-    } catch (error:unknown) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
@@ -109,7 +109,7 @@ export const deleteCategory = async (
         }
 
         return res.status(200).json({ message: "Category deleted successfully" });
-    } catch (error:unknown) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };

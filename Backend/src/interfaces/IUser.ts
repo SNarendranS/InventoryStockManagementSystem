@@ -6,17 +6,10 @@ export interface UserAttributes {
     email: string;
     password: string;
     role: UserRole;
-    managerid?: number;
+    managerid: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface UserCreationAttributes extends Optional<UserAttributes, "userid" | "managerid" | "createdAt" | "updatedAt"> { }
-
-export interface UserBody {
-    name: string;
-    email: string;
-    password: string;
-    role: UserRole;
-    managerid?: number;
-}
+export interface UserCreationAttributes extends Optional<UserAttributes,
+    "userid" | "role" | "managerid" | "createdAt" | "updatedAt"> { }

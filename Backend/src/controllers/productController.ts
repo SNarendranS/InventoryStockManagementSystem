@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Product } from "../models/Product";
-import { productBody } from "../interfaces/IProduct";
 import { Category } from "../models/Category";
+import { ProductCreationAttributes } from "../interfaces/IProduct";
 
 export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -90,7 +90,7 @@ export const getAllProductsByCategoryId = async (req: Request<{ categoryid: stri
 };
 
 export const createProduct = async (
-    req: Request<{}, {}, productBody>,
+    req: Request<{}, {}, ProductCreationAttributes>,
     res: Response,
     next: NextFunction
 ) => {
@@ -127,7 +127,7 @@ export const createProduct = async (
 };
 
 export const createBulkProducts = async (
-    req: Request<{}, {}, productBody[]>,
+    req: Request<{}, {}, ProductCreationAttributes[]>,
     res: Response,
     next: NextFunction
 ) => {
@@ -145,7 +145,7 @@ export const createBulkProducts = async (
         });
         const existingCategoryIds = new Set(existingCategories.map(c => c.categoryid));
 
-        const validProducts: productBody[] = [];
+        const validProducts: ProductCreationAttributes[] = [];
         const errors: Record<string, string[]> = {};
 
         for (const p of products) {
@@ -182,7 +182,7 @@ export const createBulkProducts = async (
 };
 
 export const updateProduct = async (
-    req: Request<{ productid: string }, {}, productBody>,
+    req: Request<{ productid: string }, {}, ProductCreationAttributes>,
     res: Response,
     next: NextFunction
 ) => {
@@ -192,7 +192,7 @@ export const updateProduct = async (
         }
 
         const { productid } = req.params;
-        const fieldsToUpdate = Object.fromEntries(
+        const fieldsToUpdate:Partial<ProductCreationAttributes> = Object.fromEntries(
             Object.entries(req.body).filter(([_, value]) => value !== undefined)
         );
 
