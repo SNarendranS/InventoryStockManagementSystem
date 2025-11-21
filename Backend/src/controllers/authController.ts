@@ -3,11 +3,12 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 import { UserRole } from "../enums/EuserRoles"
 import { LoginBody, RegisterBody, JWTPayload } from "../interfaces/IAuth"
+
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export const register = async (req: Request<{}, {}, RegisterBody>, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role,managerid } = req.body;
 
         if (!name || !email || !password) {
             res.status(400).json({ message: "Name, email, and password are required" });
@@ -25,6 +26,7 @@ export const register = async (req: Request<{}, {}, RegisterBody>, res: Response
             email,
             password,
             role: role || UserRole.EMPLOYEE,
+            managerid:managerid || null
         });
 
         res.status(201).json({
