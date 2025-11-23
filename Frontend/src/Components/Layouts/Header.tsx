@@ -41,11 +41,11 @@ const Header: React.FC = () => {
 
         switch (user.role) {
             case "admin":
-                return ["Dashboard", "Products", "Stock", "Transactions", "Reports", "Create User"];
+                return ["Dashboard", "Products", "Transactions", "Reports", "Admin"];
             case "manager":
-                return ["Dashboard", "Products", "Stock", "Reports"];
+                return ["Dashboard", "Products", "Reports"];
             case "employee":
-                return ["Dashboard", "Products", "Stock"];
+                return ["Dashboard", "Products"];
             default:
                 return ["Dashboard"];
         }
