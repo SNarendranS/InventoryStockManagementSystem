@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Box } from "@mui/material";
+import RequireAuth from "../../Auth/RequireAuth";
 
 const Dashboard = () => <h1>Dashboard</h1>;
 const Products = () => <h1>Products</h1>;
@@ -20,12 +21,48 @@ const Body: React.FC = () => {
             }}
         >
             <Routes>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/stock" element={<Stock />} />
-                <Route path="/transactions" element={<Transactions />} />
-                <Route path="/reports" element={<Reports />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <RequireAuth>
+                            <Dashboard />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/products"
+                    element={
+                        <RequireAuth>
+                            <Products />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/stock"
+                    element={
+                        <RequireAuth>
+                            <Stock />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/transactions"
+                    element={
+                        <RequireAuth>
+                            <Transactions />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/reports"
+                    element={
+                        <RequireAuth>
+                            <Reports />
+                        </RequireAuth>
+                    }
+                />
             </Routes>
+
         </Box>
     );
 };

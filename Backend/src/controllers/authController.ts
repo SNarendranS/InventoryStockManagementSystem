@@ -43,7 +43,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response, next
         const { email, password } = req.body;
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            res.status(401).json({ message: "Invalid credentials" });
+            res.status(401).json({ message: "No User found" });
             return;
         }
 

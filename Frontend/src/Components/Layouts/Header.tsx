@@ -20,8 +20,13 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearToken } from "../../Store/userTokenSlice";
 
-const navItems = ["Dashboard", "Products", "Stock", "Transactions", "Reports"];
+import { useSelector } from "react-redux";
+import type { RootState } from "../../Store/store";
+
+
 
 const Header: React.FC = () => {
     const theme = useTheme();
@@ -29,7 +34,22 @@ const Header: React.FC = () => {
 
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [avatarMenuAnchor, setAvatarMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const user = useSelector((state: RootState) => state.userToken.user);
 
+    const navItems = React.useMemo(() => {
+        if (!user) return [];
+
+        switch (user.role) {
+            case "admin":
+                return ["Dashboard", "Products", "Stock", "Transactions", "Reports", "Create User"];
+            case "manager":
+                return ["Dashboard", "Products", "Stock", "Reports"];
+            case "employee":
+                return ["Dashboard", "Products", "Stock"];
+            default:
+                return ["Dashboard"];
+        }
+    }, [user]);
     const handleAvatarClick = (event: React.MouseEvent<HTMLDivElement>) => {
         setAvatarMenuAnchor(event.currentTarget);
     };
@@ -37,11 +57,22 @@ const Header: React.FC = () => {
     const handleMenuClose = () => {
         setAvatarMenuAnchor(null);
     };
+    const navigate = useNavigate()
+    const handleNavigate = (e: React.MouseEvent, item: string) => {
+        e.stopPropagation();
+        const path = "/" + item.toLowerCase().replaceAll(" ", "-");
+        navigate(path);
+    };
 
     const toggleDrawer = (val: boolean) => () => {
         setDrawerOpen(val);
     };
-    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const handleLogout = () => {
+        dispatch(clearToken())
+    }
+
     return (
         <>
             <AppBar
@@ -79,7 +110,7 @@ const Header: React.FC = () => {
                             <Box sx={{ display: "flex", gap: 1, ml: 3 }}>
                                 {navItems.map((item) => (
                                     <Button
-                                        onClick={() =>navigate(`${item.toLowerCase().replaceAll(" ","-")}`)}
+                                        onClick={(e) => handleNavigate(e, item)}
                                         key={item}
                                         color="inherit"
                                         sx={{
@@ -127,7 +158,7 @@ const Header: React.FC = () => {
                         <MenuItem onClick={handleMenuClose}>Notifications</MenuItem>
                         <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
                         <Divider />
-                        <MenuItem onClick={handleMenuClose} sx={{ color: "red" }}>
+                        <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
                             Logout
                         </MenuItem>
                     </Menu>
@@ -151,7 +182,9 @@ const Header: React.FC = () => {
                     <List>
                         {navItems.map((item) => (
                             <ListItem key={item} disablePadding>
-                                <ListItemButton>
+                                <ListItemButton onClick={(e) => {
+                                    handleNavigate(e, item); setDrawerOpen(false);
+                                }}>
                                     <ListItemText primary={item} />
                                 </ListItemButton>
                             </ListItem>
