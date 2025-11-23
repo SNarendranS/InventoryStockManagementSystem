@@ -9,6 +9,7 @@ import authRoutes from "../routes/authRoutes";
 import userRoutes from "../routes/userRoutes";
 import categoryRoutes from "../routes/categoryRoutes";
 import productRoutes from "../routes/productRoutes";
+import transactionRoutes from "../routes/transactionRoutes";
 
 import { errorHandler } from "../middlewares/errorHandler";
 
@@ -32,7 +33,7 @@ app.use(`${baseURI}/auth`, authRoutes);
 app.use(`${baseURI}/user`, userRoutes);
 app.use(`${baseURI}/category`, categoryRoutes);
 app.use(`${baseURI}/product`, productRoutes);
-
+app.use(`${baseURI}/transaction`, transactionRoutes);
 
 app.use(errorHandler);
 export default app
