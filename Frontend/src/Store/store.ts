@@ -7,6 +7,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import { authApi } from "../Services/authApi";
 import { productApi } from "../Services/productApi";
 import { transactionApi } from "../Services/transactionApi";
+import { dashboardApi } from "../Services/dashboardApi";
 
 const persistConfig = { key: "inventory-root", storage };
 const persistedUserToken = persistReducer(persistConfig, userTokenReducer);
@@ -17,6 +18,8 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [transactionApi.reducerPath]: transactionApi.reducer,
+    [dashboardApi.reducerPath]: dashboardApi.reducer,
+
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -33,7 +36,9 @@ export const store = configureStore({
     })
       .concat(authApi.middleware)
       .concat(productApi.middleware)
-      .concat(transactionApi.middleware),
+      .concat(transactionApi.middleware)
+      .concat(dashboardApi.middleware),
+
 });
 
 export const persistor = persistStore(store);
