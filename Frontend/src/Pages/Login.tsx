@@ -5,28 +5,31 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { setToken } from "../Store/userTokenSlice";
 import { useNavigate } from "react-router-dom";
-import api from "../Lib/axiosInstance"; // Axios instance
+import { useLoginMutation } from "../Services/authApi";
 
 // Validation schema
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .min(4, "Too short!")
-    .required("Password is required"),
+  password: Yup.string().min(4, "Too short!").required("Password is required"),
 });
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // ← Get mutation hook here
+  const [login, { isLoading }] = useLoginMutation();
+
   const handleSubmit = async (values: { email: string; password: string }) => {
     try {
-      const res = await api.post("/auth/login", values);
-      dispatch(setToken({ token: res.data.token, user: res.data.user }));
+      const res = await login(values).unwrap();
+
+      dispatch(setToken({ token: res.token, user: res.user }));
+
       navigate("/dashboard");
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || "Login failed";
+      const msg = err?.data?.message || "Login failed";
       alert(msg);
     }
   };
@@ -74,7 +77,6 @@ const Login: React.FC = () => {
             touched,
             handleChange,
             handleBlur,
-            isSubmitting,
           }) => (
             <Form>
               <TextField
@@ -108,15 +110,15 @@ const Login: React.FC = () => {
                 fullWidth
                 type="submit"
                 variant="contained"
-                disabled={isSubmitting}
+                disabled={isLoading}
                 sx={{
-                  background:"goldenrod",
+                  background: "goldenrod",
                   textTransform: "none",
                   fontWeight: 600,
                   borderRadius: 2,
                 }}
               >
-                Login
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
 
               <Typography
