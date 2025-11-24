@@ -16,7 +16,7 @@ import {
     ListItemButton,
     ListItemText,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +25,7 @@ import { clearToken } from "../Store/userTokenSlice";
 
 import { useSelector } from "react-redux";
 import type { RootState } from "../Store/store";
+import { Inventory } from "@mui/icons-material";
 
 
 
@@ -94,17 +95,20 @@ const Header: React.FC = () => {
                     {/* Left Side: Logo + Navigation */}
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {/* Logo */}
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                fontWeight: 600,
-                                letterSpacing: 0.7,
-                                cursor: "pointer"
-                            }}
-                        >
-                            📦 Inventory Manager
-                        </Typography>
-
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Inventory sx={{color:"goldenrod"}}/>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: 600,
+                                    letterSpacing: 0.7,
+                                    cursor: "pointer",
+                                    ml:1
+                                }}
+                            >
+                                Inventory Manager
+                            </Typography>
+                        </Box>
                         {/* Desktop Navigation */}
                         {!isMobile && (
                             <Box sx={{ display: "flex", gap: 1, ml: 3 }}>

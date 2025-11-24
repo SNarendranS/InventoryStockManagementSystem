@@ -34,7 +34,7 @@ const Login: React.FC = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
+        height: "90vh",
         width: "100%",
         backgroundColor: "#f9f9f9",
         display: "flex",
@@ -46,7 +46,7 @@ const Login: React.FC = () => {
       <Paper
         elevation={3}
         sx={{
-          width: { xs: "90%", sm: "400px" },
+          width: { xs: "90%", sm: "300px" },
           padding: 4,
           borderRadius: 3,
         }}
@@ -110,6 +110,7 @@ const Login: React.FC = () => {
                 variant="contained"
                 disabled={isSubmitting}
                 sx={{
+                  background:"goldenrod",
                   textTransform: "none",
                   fontWeight: 600,
                   borderRadius: 2,
