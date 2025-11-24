@@ -41,7 +41,10 @@ export const register = async (req: Request<{}, {}, RegisterBody>, res: Response
 export const login = async (req: Request<{}, {}, LoginBody>, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ 
+                where: { email } },
+            
+        );
         if (!user) {
             res.status(401).json({ message: "No User found" });
             return;
@@ -64,7 +67,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response, next
             { expiresIn: "1d" }
         );
 
-        res.status(200).json({ token, user });
+        res.status(200).json({ token, user:payload });
     } catch (error: unknown) {
         next(error as Error)
     }
