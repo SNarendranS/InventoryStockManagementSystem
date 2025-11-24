@@ -4,9 +4,6 @@ import type { LoginRequest, LoginResponse } from "../Interfaces/IAuth";
 import type { GetProductsResponse, Product } from "../Interfaces/IProduct";
 import type { GetTransactionsResponse } from "../Interfaces/ITransaction";
 
-
-
-
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
