@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Header from "./Components/Layouts/Header";
-import Body from "./Components/Layouts/Body";
-import Login from "./Components/Pages/Login";
+import Header from "./Layouts/Header";
+import Body from "./Layouts/Body";
+import Login from "./Pages/Login";
 import RequireAuth from "./Auth/RequireAuth";
 
 function App() {

@@ -3,9 +3,9 @@ import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { setToken } from "../../Store/userTokenSlice";
+import { setToken } from "../Store/userTokenSlice";
 import { useNavigate } from "react-router-dom";
-import api from "../../Lib/axiosInstance"; // Axios instance
+import api from "../Lib/axiosInstance"; // Axios instance
 
 // Validation schema
 const LoginSchema = Yup.object().shape({

@@ -1,8 +1,8 @@
 import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
-import { useGetProductsQuery } from "../../Store/apiSlice";
-import type { Product } from "../../Interfaces/IProduct";
-import DataTable from "./DataTable";
+import { useGetProductsQuery } from "../Services/productApi";
+import type { Product } from "../Interfaces/IProduct";
+import DataTable from "../Components/DataTable";
 
 const Products: React.FC = () => {
     const { data, error, isLoading } = useGetProductsQuery();
