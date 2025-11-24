@@ -21,10 +21,10 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { clearToken } from "../../Store/userTokenSlice";
+import { clearToken } from "../Store/userTokenSlice";
 
 import { useSelector } from "react-redux";
-import type { RootState } from "../../Store/store";
+import type { RootState } from "../Store/store";
 
 
 

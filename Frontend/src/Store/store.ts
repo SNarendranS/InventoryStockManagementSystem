@@ -1,16 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userTokenReducer from "./userTokenSlice";
-import { apiSlice } from "./apiSlice"; // import apiSlice
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
+// Import your split API slices
+import { authApi } from "../Services/authApi";
+import { productApi } from "../Services/productApi";
+import { transactionApi } from "../Services/transactionApi";
+
 const persistConfig = { key: "inventory-root", storage };
-const persisted = persistReducer(persistConfig, userTokenReducer);
+const persistedUserToken = persistReducer(persistConfig, userTokenReducer);
 
 export const store = configureStore({
   reducer: {
-    userToken: persisted,
-    [apiSlice.reducerPath]: apiSlice.reducer,
+    userToken: persistedUserToken,
+    [authApi.reducerPath]: authApi.reducer,
+    [productApi.reducerPath]: productApi.reducer,
+    [transactionApi.reducerPath]: transactionApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -24,7 +30,10 @@ export const store = configureStore({
           "persist/PURGE",
         ],
       },
-    }).concat(apiSlice.middleware),
+    })
+      .concat(authApi.middleware)
+      .concat(productApi.middleware)
+      .concat(transactionApi.middleware),
 });
 
 export const persistor = persistStore(store);
