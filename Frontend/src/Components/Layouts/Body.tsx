@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { Box } from "@mui/material";
-import RequireAuth from "../../Auth/RequireAuth";
 import Products from "../Pages/Products";
 import Transactions from "../Pages/Transactions";
 
@@ -24,41 +23,31 @@ const Body: React.FC = () => {
                 <Route
                     path="/dashboard"
                     element={
-                        <RequireAuth>
-                            <Dashboard />
-                        </RequireAuth>
+                        <Dashboard />
                     }
                 />
                 <Route
                     path="/products"
                     element={
-                        <RequireAuth>
-                            <Products />
-                        </RequireAuth>
+                        <Products />
                     }
                 />
                 <Route
                     path="/stock"
                     element={
-                        <RequireAuth>
-                            <Stock />
-                        </RequireAuth>
+                        <Stock />
                     }
                 />
                 <Route
                     path="/transactions"
                     element={
-                        <RequireAuth>
-                            <Transactions />
-                        </RequireAuth>
+                        <Transactions />
                     }
                 />
                 <Route
                     path="/reports"
                     element={
-                        <RequireAuth>
-                            <Reports />
-                        </RequireAuth>
+                        <Reports />
                     }
                 />
             </Routes>

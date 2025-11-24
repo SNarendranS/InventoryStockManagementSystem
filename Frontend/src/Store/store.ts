@@ -10,7 +10,7 @@ const persisted = persistReducer(persistConfig, userTokenReducer);
 export const store = configureStore({
   reducer: {
     userToken: persisted,
-    [apiSlice.reducerPath]: apiSlice.reducer, // add api reducer
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -24,7 +24,7 @@ export const store = configureStore({
           "persist/PURGE",
         ],
       },
-    }).concat(apiSlice.middleware), // add api middleware
+    }).concat(apiSlice.middleware),
 });
 
 export const persistor = persistStore(store);
