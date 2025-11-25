@@ -42,11 +42,11 @@ const Header: React.FC = () => {
 
         switch (user.role) {
             case "admin":
-                return ["Dashboard", "Products", "Transactions", "Reports", "Admin"];
+                return ["Dashboard", "Categories", "Products", "Transactions", "Reports", "Admin"];
             case "manager":
-                return ["Dashboard", "Products", "Reports"];
+                return ["Dashboard", "Categories", "Products", "Reports"];
             case "employee":
-                return ["Dashboard", "Products"];
+                return ["Dashboard", "Categories", "Products"];
             default:
                 return ["Dashboard"];
         }
@@ -96,14 +96,14 @@ const Header: React.FC = () => {
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         {/* Logo */}
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Inventory sx={{color:"goldenrod"}}/>
+                            <Inventory sx={{ color: "goldenrod" }} />
                             <Typography
                                 variant="h6"
                                 sx={{
                                     fontWeight: 600,
                                     letterSpacing: 0.7,
                                     cursor: "pointer",
-                                    ml:1
+                                    ml: 1
                                 }}
                             >
                                 Inventory Manager
