@@ -4,7 +4,6 @@ import { Transaction } from "../models/Transaction";
 import { Product } from "../models/Product";
 import { TransactionCreationAttributes } from "../interfaces/ITransaction";
 import { TransactionType } from "../enums/EtransactionType";
-import { Category } from "../models/Category";
 
 export const getAllTransactions = async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -23,7 +22,7 @@ export const getAllTransactions = async (_req: Request, res: Response, next: Nex
         }
 
         return res.status(200).json({ count, transactions });
-    } catch (error) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
@@ -51,7 +50,7 @@ export const getTransactionById = async (
         }
 
         return res.status(200).json({ transaction });
-    } catch (error) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
@@ -80,7 +79,7 @@ export const getTransactionsByProductId = async (
         }
 
         return res.status(200).json({ count, transactions });
-    } catch (error) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
@@ -110,7 +109,7 @@ export const getTransactionsByCategoryId = async (
             count,
             transactions
         });
-    } catch (error) {
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
@@ -165,7 +164,7 @@ export const createTransaction = async (
             message: "Transaction created successfully",
             transaction
         });
-    } catch (error) {
+    } catch (error: unknown) {
         await t.rollback();
         next(error as Error);
     }
@@ -242,7 +241,7 @@ export const updateTransaction = async (
         await t.commit();
 
         return res.status(200).json({ message: "Transaction updated successfully" });
-    } catch (error) {
+    } catch (error: unknown) {
         await t.rollback();
         next(error as Error);
     }
@@ -282,8 +281,38 @@ export const deleteTransaction = async (
         await t.commit();
 
         return res.status(200).json({ message: "Transaction deleted successfully" });
-    } catch (error) {
+    } catch (error: unknown) {
         await t.rollback();
+        next(error as Error);
+    }
+};
+
+export const getRecentTransactionsByType = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { type, limit } = req.query
+        if (!type || (type !== "IN" && type !== "OUT")) {
+            return res.status(400).json({ message: "Invalid or missing transaction type" });
+        }
+
+        const { count, rows: transactions } = await Transaction.findAndCountAll({
+            where: { type: type == "IN" ? TransactionType.IN : TransactionType.OUT },
+            limit: Number(limit),
+            include: [
+                {
+                    model: Product,
+                    as: "product",
+                    attributes: ["productName", "sku", "price", "quantity"]
+                }
+            ],
+            order:[["createdAt", "DESC"]]
+        });
+
+        if (count === 0) {
+            return res.status(404).json({ message: "No transactions found" });
+        }
+
+        return res.status(200).json({ count, transactions });
+    } catch (error: unknown) {
         next(error as Error);
     }
 };
