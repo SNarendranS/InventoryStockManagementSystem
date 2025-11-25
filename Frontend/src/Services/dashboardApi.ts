@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../Store/store";
+import type { GetProductsResponse } from "../Interfaces/IProduct";
 
-// Dashboard response interface
 export interface DashboardSummary {
     productCount: number;
     categoryCount: number;
@@ -11,7 +11,6 @@ export interface DashboardSummary {
     totalSales: number;
     totalPurchase: number;
 }
-
 
 export const dashboardApi = createApi({
     reducerPath: "dashboardApi",
@@ -36,7 +35,14 @@ export const dashboardApi = createApi({
                 totalPurchase: Number(response.totalPurchase.totalPurchase),
             }),
         }),
+        getLowStockProducts: builder.query<GetProductsResponse, void>({
+              query: () => "/dashboard/low-stock",
+               transformResponse: (response: any) => ({
+                count: response.count,
+                products: response.lowStock
+            })
+            }),
     }),
 });
 
-export const { useGetDashboardSummaryQuery } = dashboardApi;
+export const { useGetDashboardSummaryQuery, useGetLowStockProductsQuery } = dashboardApi;
