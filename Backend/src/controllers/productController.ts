@@ -241,7 +241,7 @@ export const deleteProduct = async (
 
 export const getLowStockProducts = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        const { count, rows: lowStock } = await Product.findAndCountAll({
+        const { count, rows: products } = await Product.findAndCountAll({
             where: where(
                 col("quantity"),
                 { [Op.lte]: col("restockLevel") }
@@ -261,7 +261,7 @@ export const getLowStockProducts = async (_req: Request, res: Response, next: Ne
                 attributes: ["categoryName"]
             }],
         });
-        return res.status(200).json({ count, lowStock });
+        return res.status(200).json({ count, products });
     } catch (error) {
         next(error as Error);
     }

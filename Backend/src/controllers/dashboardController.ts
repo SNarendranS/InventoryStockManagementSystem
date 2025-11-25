@@ -7,13 +7,10 @@ import { TransactionType } from "../enums/EtransactionType";
 
 export const getdashboardSummary = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        // Total products
         const productCount: number = await Product.count();
 
-        // Total categories
         const categoryCount: number = await Category.count();
 
-        // Low stock count
         const lowStock = await Product.count({
             where: where(
                 col("quantity"),
@@ -21,17 +18,14 @@ export const getdashboardSummary = async (_req: Request, res: Response, next: Ne
             )
         });
 
-        // Count of OUT transactions
         const salesCount = await Transaction.count({
             where: { type: TransactionType.OUT }
         });
 
-        // Count of IN transactions
         const newStockCount = await Transaction.count({
             where: { type: TransactionType.IN }
         });
 
-        // TOTAL SALES
         const totalSales = await Transaction.findOne({
             attributes: [
                 [fn("SUM", literal(`"Transaction"."quantity" * "product"."price"`)), "totalSales"]
@@ -47,7 +41,6 @@ export const getdashboardSummary = async (_req: Request, res: Response, next: Ne
             raw: true
         });
 
-        // TOTAL PURCHASE
         const totalPurchase = await Transaction.findOne({
             attributes: [
                 [fn("SUM", literal(`"Transaction"."quantity" * "product"."price"`)), "totalPurchase"]

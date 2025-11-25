@@ -13,6 +13,6 @@ router.post("/", authMiddleware, roleMiddleware([UserRole.ADMIN]), createProduct
 router.post("/bulk", authMiddleware, roleMiddleware([UserRole.ADMIN]), createBulkProducts);
 router.put("/:productid", authMiddleware, roleMiddleware([UserRole.ADMIN,UserRole.MANAGER]), updateProduct);
 router.delete("/:productid", authMiddleware, roleMiddleware([UserRole.ADMIN]), deleteProduct);
-router.get("/low-stock",authMiddleware, getLowStockProducts);
+router.get("/stock/low",authMiddleware, getLowStockProducts);
 
 export default router;
