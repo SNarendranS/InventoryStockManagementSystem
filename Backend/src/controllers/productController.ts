@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Product } from "../models/Product";
 import { Category } from "../models/Category";
 import { ProductCreationAttributes } from "../interfaces/IProduct";
+import { col, Op, where } from "sequelize";
 
 export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -234,6 +235,34 @@ export const deleteProduct = async (
 
         return res.status(200).json({ message: "Product deleted successfully" });
     } catch (error: unknown) {
+        next(error as Error);
+    }
+};
+
+export const getLowStockProducts = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { count, rows: lowStock } = await Product.findAndCountAll({
+            where: where(
+                col("quantity"),
+                { [Op.lte]: col("restockLevel") }
+            ),
+            attributes: [
+                "productid",
+                "productName",
+                "productDescription",
+                "sku",
+                "price",
+                "quantity",
+                "categoryid"
+            ],
+            include: [{
+                model: Category,
+                as: "category",
+                attributes: ["categoryName"]
+            }],
+        });
+        return res.status(200).json({ count, lowStock });
+    } catch (error) {
         next(error as Error);
     }
 };

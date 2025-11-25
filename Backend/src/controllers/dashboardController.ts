@@ -78,31 +78,3 @@ export const getdashboardSummary = async (_req: Request, res: Response, next: Ne
         next(error as Error);
     }
 };
-
-export const getLowStockProducts = async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { count, rows: lowStock } = await Product.findAndCountAll({
-            where: where(
-                col("quantity"),
-                { [Op.lte]: col("restockLevel") }
-            ),
-            attributes: [
-                "productid",
-                "productName",
-                "productDescription",
-                "sku",
-                "price",
-                "quantity",
-                "categoryid"
-            ],
-            include: [{
-                model: Category,
-                as: "category",
-                attributes: ["categoryName"]
-            }],
-        });
-        return res.status(200).json({ count, lowStock });
-    } catch (error) {
-        next(error as Error);
-    }
-};
