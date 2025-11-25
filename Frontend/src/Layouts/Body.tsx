@@ -5,6 +5,7 @@ import Dashboard from "../Pages/Dashboard/Dashboard";
 import Products from "../Pages/Products";
 import Transactions from "../Pages/Transactions";
 import Categories from "../Pages/Categories";
+import AddTransaction from "../Pages/AddTransaction";
 
 const Reports = () => <h1>Reports</h1>;
 
@@ -42,6 +43,12 @@ const Body: React.FC = () => {
                     path="/transactions"
                     element={
                         <Transactions />
+                    }
+                />
+                <Route
+                    path="/create-transaction"
+                    element={
+                        <AddTransaction />
                     }
                 />
                 <Route

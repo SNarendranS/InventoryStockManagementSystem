@@ -12,11 +12,28 @@ export const transactionApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Transactions", "Products"],   // ⭐ Add this
   endpoints: (builder) => ({
     getTransactions: builder.query<GetTransactionsResponse, void>({
       query: () => "/transaction",
+      providesTags: ["Transactions"],       // ⭐ Mark data source
+    }),
+
+    createTransaction: builder.mutation<
+      any,
+      { productid: number; type: "IN" | "OUT"; quantity: number; note?: string }
+    >({
+      query: (body) => ({
+        url: "/transaction",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Transactions", "Products"],  // ⭐ Auto-refresh after mutation
     }),
   }),
 });
 
-export const { useGetTransactionsQuery } = transactionApi;
+export const {
+  useGetTransactionsQuery,
+  useCreateTransactionMutation,
+} = transactionApi;

@@ -11,6 +11,7 @@ export interface Product {
     sku: string;
     price: string;
     quantity: number;
+    restockLevel:number;
     categoryid: number;
     category: CategoryProducts;
 }

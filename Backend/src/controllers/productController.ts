@@ -14,6 +14,7 @@ export const getAllProducts = async (_req: Request, res: Response, next: NextFun
                 "sku",
                 "price",
                 "quantity",
+                "restockLevel",
                 "categoryid"
             ],
             include: [{
@@ -45,6 +46,7 @@ export const getProductById = async (req: Request<{ productid: string }, {}, {}>
                 "sku",
                 "price",
                 "quantity",
+                "restockLevel",
                 "categoryid"
             ],
             include: [{
@@ -74,6 +76,7 @@ export const getAllProductsByCategoryId = async (req: Request<{ categoryid: stri
                 "sku",
                 "price",
                 "quantity",
+                "restockLevel",
                 "categoryid"
             ],
             where: { categoryid },
@@ -253,6 +256,7 @@ export const getLowStockProducts = async (_req: Request, res: Response, next: Ne
                 "sku",
                 "price",
                 "quantity",
+                "restockLevel",
                 "categoryid"
             ],
             include: [{

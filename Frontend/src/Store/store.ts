@@ -8,7 +8,7 @@ import { authApi } from "../Services/authApi";
 import { productApi } from "../Services/productApi";
 import { transactionApi } from "../Services/transactionApi";
 import { dashboardApi } from "../Services/dashboardApi";
-import { categoryApi } from "../Services/CategoryApi";
+import { categoryApi } from "../Services/categoryApi";
 
 const persistConfig = { key: "inventory-root", storage };
 const persistedUserToken = persistReducer(persistConfig, userTokenReducer);

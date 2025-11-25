@@ -16,6 +16,9 @@ export const productApi = createApi({
     getProducts: builder.query<GetProductsResponse, void>({
       query: () => "/product",
     }),
+    getProductsByCategory: builder.query<GetProductsResponse, {categoryid:number}>({
+      query: ({categoryid}) => `/product/category/${categoryid}`,
+    }),
     createProduct: builder.mutation<Product, Partial<Product>>({
       query: (body) => ({
         url: "/product",
@@ -26,4 +29,4 @@ export const productApi = createApi({
   }),
 });
 
-export const { useGetProductsQuery, useCreateProductMutation } = productApi;
+export const { useGetProductsQuery, useCreateProductMutation ,useGetProductsByCategoryQuery} = productApi;

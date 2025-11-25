@@ -1,7 +1,7 @@
 import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
 import DataTable from "../Components/DataTable";
-import { useGetCategoriesQuery } from "../Services/CategoryApi";
+import { useGetCategoriesQuery } from "../Services/categoryApi";
 
 const Categories: React.FC = () => {
     const { data, error, isLoading } = useGetCategoriesQuery();
