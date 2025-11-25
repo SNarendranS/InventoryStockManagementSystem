@@ -4,8 +4,8 @@ import { Box } from "@mui/material";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import Products from "../Pages/Products";
 import Transactions from "../Pages/Transactions";
+import Categories from "../Pages/Categories";
 
-const Stock = () => <h1>Stock</h1>;
 const Reports = () => <h1>Reports</h1>;
 
 const Body: React.FC = () => {
@@ -33,9 +33,9 @@ const Body: React.FC = () => {
                     }
                 />
                 <Route
-                    path="/stock"
+                    path="/categories"
                     element={
-                        <Stock />
+                        <Categories />
                     }
                 />
                 <Route

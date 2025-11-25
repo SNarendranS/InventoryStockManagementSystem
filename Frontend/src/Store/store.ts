@@ -8,6 +8,7 @@ import { authApi } from "../Services/authApi";
 import { productApi } from "../Services/productApi";
 import { transactionApi } from "../Services/transactionApi";
 import { dashboardApi } from "../Services/dashboardApi";
+import { categoryApi } from "../Services/CategoryApi";
 
 const persistConfig = { key: "inventory-root", storage };
 const persistedUserToken = persistReducer(persistConfig, userTokenReducer);
@@ -17,6 +18,7 @@ export const store = configureStore({
     userToken: persistedUserToken,
     [authApi.reducerPath]: authApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
+    [categoryApi.reducerPath]: categoryApi.reducer,
     [transactionApi.reducerPath]: transactionApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
 
@@ -36,6 +38,7 @@ export const store = configureStore({
     })
       .concat(authApi.middleware)
       .concat(productApi.middleware)
+      .concat(categoryApi.middleware)
       .concat(transactionApi.middleware)
       .concat(dashboardApi.middleware),
 
