@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../Store/store";
-import type { GetTransactionsResponse } from "../Interfaces/ITransaction";
+import type { GetDemandSalesResponse, GetTransactionsResponse } from "../Interfaces/ITransaction";
 
 export const transactionApi = createApi({
   reducerPath: "transactionApi",
@@ -19,10 +19,7 @@ export const transactionApi = createApi({
       providesTags: ["Transactions"],       // ⭐ Mark data source
     }),
 
-    createTransaction: builder.mutation<
-      any,
-      { productid: number; type: "IN" | "OUT"; quantity: number; note?: string }
-    >({
+    createTransaction: builder.mutation<any, { productid: number; type: "IN" | "OUT"; quantity: number; note?: string }>({
       query: (body) => ({
         url: "/transaction",
         method: "POST",
@@ -30,10 +27,30 @@ export const transactionApi = createApi({
       }),
       invalidatesTags: ["Transactions", "Products"],  // ⭐ Auto-refresh after mutation
     }),
-  }),
-});
+    getRecentTransactionByType: builder.query<GetTransactionsResponse, { type: string; limit: number }>({
+      query: ({ type, limit }) => `/transaction/recent/desc?type=${type}&limit=${limit}`,
+    }),
+    getDemandSalesTransactions: builder.query<GetDemandSalesResponse, void>({
+  query: () => `/transaction/demand/sales`,
+  transformResponse: (response: any) => ({
+    count: response.count,
+    transactions: response.transactions.map((t: any) => ({
+      productid: t.productid,
+      total_transactions: Number(t.total_transactions),
+      total_quantity: Number(t.total_quantity),
+      total_sales: t.total_sales,
+      productName: t.product.productName,
+      sku: t.product.sku,
+      price: t.product.price,
+    }))
+  })
+})
+  })
+})
 
 export const {
   useGetTransactionsQuery,
   useCreateTransactionMutation,
+  useGetDemandSalesTransactionsQuery,
+  useGetRecentTransactionByTypeQuery
 } = transactionApi;

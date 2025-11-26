@@ -2,7 +2,7 @@ import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
 import type { Transaction } from "../../Interfaces/ITransaction";
 import DataTable from "../../Components/DataTable";
-import { useGetRecentTransactionByTypeQuery } from "../../Services/dashboardApi";
+import { useGetRecentTransactionByTypeQuery } from "../../Services/transactionApi";
 
 type Props={
     transactionType:string

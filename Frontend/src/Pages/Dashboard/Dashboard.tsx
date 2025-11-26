@@ -4,9 +4,11 @@ import Summary from "./Summary";
 import LowStock from "./LowStock";
 import RecentTransactions from "./RecentTransactions";
 import { ArrowUpward } from "@mui/icons-material";
+import DemandSales from "./DemandSales";
 
 const Dashboard: React.FC = () => {
   const lowStockRef = useRef<HTMLDivElement | null>(null);
+  const demandSalesRef = useRef<HTMLDivElement | null>(null);
   const inTransactionRef = useRef<HTMLDivElement | null>(null);
   const outTransactionRef = useRef<HTMLDivElement | null>(null);
 
@@ -40,6 +42,7 @@ const Dashboard: React.FC = () => {
 
       <Summary
         onLowStockClick={() => scrollToElement(lowStockRef)}
+        demandSalesClick={() => scrollToElement(demandSalesRef)}
         inTransactionClick={() => scrollToElement(inTransactionRef)}
         outTransactionClick={() => scrollToElement(outTransactionRef)}
       />
@@ -47,6 +50,9 @@ const Dashboard: React.FC = () => {
       <Box sx={{ pt: 6, display: "flex", flexDirection: "column", gap: 6 }}>
         <Box ref={lowStockRef}>
           <LowStock />
+        </Box>
+        <Box ref={demandSalesRef}>
+          <DemandSales />
         </Box>
         <Box ref={inTransactionRef}>
           <RecentTransactions transactionType="IN" />
@@ -58,7 +64,7 @@ const Dashboard: React.FC = () => {
       {showButton && <IconButton
         onClick={() => scrollTo({ top: 0, behavior: "smooth" })}
         sx={{
-          scale:1.25,
+          scale: 1.25,
           position: "fixed",
           bottom: 45,
           right: 45,
@@ -66,7 +72,7 @@ const Dashboard: React.FC = () => {
           zIndex: 9999,
           borderRadius: "50%",
           background: "#c9c5c5ff",
-          color:"black"
+          color: "black"
         }}
       >
         <ArrowUpward />

@@ -1,7 +1,7 @@
 import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
 import DataTable from "../../Components/DataTable";
-import { useGetLowStockProductsQuery } from "../../Services/dashboardApi";
+import { useGetLowStockProductsQuery } from "../../Services/productApi";
 import type { Product } from "../../Interfaces/IProduct";
 
 const LowStock: React.FC = () => {
