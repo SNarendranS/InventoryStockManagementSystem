@@ -4,6 +4,8 @@ import { Category } from "../models/Category";
 import { col, fn, literal, Op, where } from "sequelize";
 import { Transaction } from "../models/Transaction";
 import { TransactionType } from "../enums/EtransactionType";
+import { count } from "console";
+import { sequelize } from "../config/database";
 
 export const getdashboardSummary = async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -17,7 +19,20 @@ export const getdashboardSummary = async (_req: Request, res: Response, next: Ne
                 { [Op.lte]: col("restockLevel") }
             )
         });
-
+        const topSeller = await Transaction.findOne({
+            attributes: [
+                [sequelize.fn("COUNT", sequelize.col("Transaction.transactionid")), "total_transactions"],
+            ],
+            include: [
+                {
+                    model: Product,
+                    as: "product",
+                    attributes: ["productName"],
+                },
+            ],
+            group: ["Transaction.productid", "product.productid"],
+            order: [[sequelize.literal("total_transactions"), "DESC"]],
+        });
         const salesCount = await Transaction.count({
             where: { type: TransactionType.OUT }
         });
@@ -61,6 +76,7 @@ export const getdashboardSummary = async (_req: Request, res: Response, next: Ne
             productCount,
             categoryCount,
             lowStock,
+            topSeller,
             salesCount,
             newStockCount,
             totalSales: totalSales ?? 0,

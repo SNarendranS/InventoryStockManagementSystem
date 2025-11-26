@@ -37,7 +37,7 @@ const Summary: React.FC<Props> = ({ onLowStockClick, inTransactionClick, outTran
         { label: "Total Products", value: data?.productCount, icon: <Inventory2Icon />, bg: "#E3F2FD", iconColor: "#1976D2", onClick: () => navigate('/view-products') },
         { label: "Total Categories", value: data?.categoryCount, icon: <CategoryIcon />, bg: "#F3E5F5", iconColor: "#9C27B0", onClick: () => navigate('/view-categories') },
         { label: "Low Stock Products", value: data?.lowStock, icon: <LocalShippingIcon />, bg: "#FFEBEE", iconColor: "#D32F2F", onClick: onLowStockClick },
-        { label: "Top Seller", value: data?.salesCount, icon: <StarPurple500Icon />, bg: "#fffad3ff", iconColor: "#ffd900ff", onClick: demandSalesClick },
+        { label: "Top Seller", value: data?.topSeller, icon: <StarPurple500Icon />, bg: "#fffad3ff", iconColor: "#ffd900ff", onClick: demandSalesClick },
         { label: "Sales Count", value: data?.salesCount, icon: <ShoppingCartIcon />, bg: "#E8F5E9", iconColor: "#388E3C", onClick: () => navigate('/view-transactions') },
         { label: "Total Sales", value: `₹${data?.totalSales.toLocaleString()}`, icon: <MonetizationOnIcon />, bg: "#FFF3E0", iconColor: "#F57C00", onClick: outTransactionClick },
         { label: "New Stock Count", value: data?.newStockCount, icon: <AddBoxIcon />, bg: "#E1F5FE", iconColor: "#0288D1", onClick: () => navigate('/view-transactions') },
@@ -45,7 +45,7 @@ const Summary: React.FC<Props> = ({ onLowStockClick, inTransactionClick, outTran
     ];
 
     return (
-        <Grid container spacing={4} sx={{ justifyContent: "center" }}>
+        <Grid container spacing={3} sx={{ justifyContent: "center" }}>
             {metrics.map(metric => (
                 <Grid key={metric.label}>
                     <GenericCard

@@ -99,7 +99,7 @@ function DataTable<T extends Record<string, any>>({
                 setSearch(e.target.value);
                 setPage(1); // reset page
               }}
-              sx={{ flex: 1 }}
+              sx={{ flex: 1, background: "#f8f8f8ff" }}
             />
 
             <Select

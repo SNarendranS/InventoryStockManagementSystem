@@ -14,7 +14,8 @@ export const getAllTransactions = async (_req: Request, res: Response, next: Nex
                     as: "product",
                     attributes: ["productName", "sku", "price", "quantity"]
                 }
-            ]
+            ],
+            order: [["createdAt", "DESC"]],
         });
 
         if (count === 0) {
@@ -71,7 +72,7 @@ export const getTransactionsByProductId = async (
                     as: "product",
                     attributes: []
                 }
-            ]
+            ],
         });
 
         if (count === 0) {
@@ -346,7 +347,7 @@ export const getTopDemandTransactions = async (req: Request, res: Response, next
             return res.status(404).json({ message: "No transactions found" });
         }
 
-        return res.status(200).json({ count:transactions.length, transactions });
+        return res.status(200).json({ count: transactions.length, transactions });
     } catch (error: unknown) {
         next(error as Error);
     }

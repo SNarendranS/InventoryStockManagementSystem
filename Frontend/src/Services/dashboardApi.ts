@@ -5,6 +5,7 @@ export interface DashboardSummary {
     productCount: number;
     categoryCount: number;
     lowStock: number;
+    topSeller: string;
     salesCount: number;
     newStockCount: number;
     totalSales: number;
@@ -28,6 +29,7 @@ export const dashboardApi = createApi({
                 productCount: response.productCount,
                 categoryCount: response.categoryCount,
                 lowStock: response.lowStock,
+                topSeller: response.topSeller?.product?.productName,
                 salesCount: response.salesCount,
                 newStockCount: response.newStockCount,
                 totalSales: Number(response.totalSales.totalSales),
