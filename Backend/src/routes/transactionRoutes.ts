@@ -7,7 +7,8 @@ import {
     updateTransaction,
     deleteTransaction,
     getTransactionsByCategoryId,
-    getRecentTransactionsByType
+    getRecentTransactionsByType,
+    getTopDemandTransactions
 } from "../controllers/transactionController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
@@ -21,5 +22,6 @@ router.post("/",authMiddleware, createTransaction);
 router.put("/:transactionid",authMiddleware, updateTransaction);
 router.delete("/:transactionid",authMiddleware, deleteTransaction);
 router.get("/recent/desc", getRecentTransactionsByType);
+router.get("/demand/sales", getTopDemandTransactions);
 
 export default router;
