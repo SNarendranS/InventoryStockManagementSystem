@@ -1,203 +1,311 @@
 import React from "react";
 import {
-    AppBar,
-    Toolbar,
-    Typography,
-    IconButton,
-    Box,
-    Button,
-    Avatar,
-    Menu,
-    MenuItem,
-    Divider,
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemText,
-    useTheme,
-    useMediaQuery,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+  Avatar,
+  Menu,
+  MenuItem,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  useTheme,
+  useMediaQuery,
+  Tooltip,
+  Fade,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { clearToken } from "../Store/userTokenSlice";
 
-import { useSelector } from "react-redux";
-import type { RootState } from "../Store/store";
+import MenuIcon from "@mui/icons-material/Menu";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Inventory } from "@mui/icons-material";
 
-
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearToken } from "../Store/userTokenSlice";
+import type { RootState } from "../Store/store";
 
 const Header: React.FC = () => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-    const [drawerOpen, setDrawerOpen] = React.useState(false);
-    const [avatarMenuAnchor, setAvatarMenuAnchor] = React.useState<null | HTMLElement>(null);
-    const user = useSelector((state: RootState) => state.userToken.user);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [avatarMenuAnchor, setAvatarMenuAnchor] = React.useState<null | HTMLElement>(null);
 
-    const navItems = React.useMemo(() => {
-        if (!user) return [];
+  const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
+  const [currentSubMenu, setCurrentSubMenu] = React.useState<string | null>(null);
 
-        switch (user.role) {
-            case "admin":
-                return ["Dashboard", "Categories", "Products", "Transactions","Create Transaction", "Reports"];//, "Admin"
-            case "manager":
-                return ["Dashboard", "Categories", "Products", "Transactions","Create Transaction", "Reports"];
-            case "employee":
-                return ["Dashboard", "Categories", "Products", "Transactions","Create Transaction",];
-            default:
-                return ["Dashboard"];
-        }
-    }, [user]);
-    const handleAvatarClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        setAvatarMenuAnchor(event.currentTarget);
-    };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.userToken.user);
 
-    const handleMenuClose = () => {
-        setAvatarMenuAnchor(null);
-    };
-    const navigate = useNavigate()
-    const handleNavigate = (e: React.MouseEvent, item: string) => {
-        e.stopPropagation();
-        const path = "/" + item.toLowerCase().replaceAll(" ", "-");
-        navigate(path);
-    };
+  // ---------------- NAV ITEMS ----------------
+  const navItems = React.useMemo(() => {
+    if (!user) return [];
 
-    const toggleDrawer = (val: boolean) => () => {
-        setDrawerOpen(val);
-    };
-    const dispatch = useDispatch()
-
-    const handleLogout = () => {
-        dispatch(clearToken())
+    switch (user.role) {
+      case "admin":
+        return [
+          "Dashboard",
+          { Categories: ["View Categories", "Add Category", "Update Category", "Delete Category"] },
+          { Products: ["View Products", "Add Product", "Update Product", "Delete Product"] },
+          { Transactions: ["View Transactions", "Make Transaction", "Update Transaction", "Delete Transaction"] },
+          "Reports"
+        ];
+      case "manager":
+        return [
+          "Dashboard",
+          { Categories: ["View Categories", "Add Category", "Update Category"] },
+          { Products: ["View Products", "Add Product", "Update Product"] },
+          { Transactions: ["View Transactions", "Make Transaction", "Update Transaction"] },
+          "Reports"
+        ];
+      case "employee":
+        return [
+          "Dashboard",
+          { Categories: ["View Categories"] },
+          { Products: ["View Products"] },
+          { Transactions: ["View Transactions", "Make Transaction"] }
+        ];
+      default:
+        return ["Dashboard"];
     }
+  }, [user]);
 
-    return (
-        <>
-            <AppBar
-                position="static"
-                elevation={2}
-                sx={{
-                    backgroundColor: "#ffffffff",
-                    color: "#222",
-                    borderBottom: "1px solid #eee"
-                }}
+  const handleNavigate = (path: string) => {
+    navigate("/" + path.toLowerCase().replaceAll(" ", "-"));
+  };
+
+  // Avatar Menu
+  const handleAvatarClick = (e: any) => setAvatarMenuAnchor(e.currentTarget);
+  const closeAvatarMenu = () => setAvatarMenuAnchor(null);
+
+  const handleLogout = () => dispatch(clearToken());
+
+  // Dropdown Menu
+  const openSubMenu = (event: any, title: string) => {
+    setMenuAnchor(event.currentTarget);
+    setCurrentSubMenu(title);
+  };
+  const closeSubMenu = () => {
+    setMenuAnchor(null);
+    setCurrentSubMenu(null);
+  };
+
+  return (
+    <>
+      {/* TOP BAR */}
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          background: "#ffffff",
+          borderBottom: "1px solid #eaeaea",
+          color: "#333",
+        }}
+      >
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            minHeight: "64px",
+          }}
+        >
+          {/* LEFT SIDE */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Inventory sx={{ color: "goldenrod" }} />
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+                letterSpacing: 0.5,
+              }}
             >
-                <Toolbar
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between"
-                    }}
-                >
-                    {/* Left Side: Logo + Navigation */}
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                        {/* Logo */}
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Inventory sx={{ color: "goldenrod" }} />
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    fontWeight: 600,
-                                    letterSpacing: 0.7,
-                                    cursor: "pointer",
-                                    ml: 1
-                                }}
-                            >
-                                Inventory Manager
-                            </Typography>
-                        </Box>
-                        {/* Desktop Navigation */}
-                        {!isMobile && (
-                            <Box sx={{ display: "flex", gap: 1, ml: 3 }}>
-                                {navItems.map((item) => (
-                                    <Button
-                                        onClick={(e) => handleNavigate(e, item)}
-                                        key={item}
-                                        color="inherit"
-                                        sx={{
-                                            minWidth: 100,
-                                            maxWidth: 150,
-                                            fontWeight: 500,
-                                            textTransform: "none",
-                                            paddingX: 2,
-                                            borderRadius: "8px",
-                                            transition: "0.2s",
-                                            "&:hover": {
-                                                backgroundColor: "#f2f2f2",
-                                                color:"goldenrod"                                            }
-                                        }}
-                                    >
-                                        {item}
-                                    </Button>
-                                ))}
-                            </Box>
-                        )}
-                    </Box>
+              Inventory Manager
+            </Typography>
 
-                    {/* Right Side: Mobile Menu + Avatar */}
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                        {/* Mobile menu icon */}
-                        {isMobile && (
-                            <IconButton onClick={toggleDrawer(true)} sx={{ mr: 1 }}>
-                                <MenuIcon />
-                            </IconButton>
-                        )}
-
-                        <Avatar
-                            sx={{ width: 36, height: 36, cursor: "pointer" }}
-                            onClick={handleAvatarClick}
-                            src="https://i.pravatar.cc/80"
-                        />
-                    </Box>
-
-                    <Menu
-                        anchorEl={avatarMenuAnchor}
-                        open={Boolean(avatarMenuAnchor)}
-                        onClose={handleMenuClose}
-                    >
-                        <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
-                        <MenuItem onClick={handleMenuClose}>Notifications</MenuItem>
-                        <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-                        <Divider />
-                        <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
-                            Logout
-                        </MenuItem>
-                    </Menu>
-                </Toolbar>
-            </AppBar>
-
-            {/* Mobile Drawer */}
-            <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-                <Box sx={{ width: 250 }}>
-                    <Typography
-                        variant="h6"
+            {/* Desktop Navigation */}
+            {!isMobile && (
+              <Box sx={{ display: "flex", gap: 1, ml: 3 }}>
+                {navItems.map((item, index) => {
+                  if (typeof item === "string") {
+                    return (
+                      <Button
+                        key={index}
+                        onClick={() => handleNavigate(item)}
                         sx={{
-                            fontWeight: 600,
-                            p: 2,
-                            borderBottom: "1px solid #eee"
+                          color: "#444",
+                          textTransform: "none",
+                          fontSize: "0.95rem",
+                          px: 2,
+                          py: 1,
+                          borderRadius: "10px",
+                          "&:hover": {
+                            background: "#f6f6f6",
+                            color: "goldenrod",
+                          },
                         }}
-                    >
-                        Inventory Menu
-                    </Typography>
+                      >
+                        {item}
+                      </Button>
+                    );
+                  }
 
-                    <List>
-                        {navItems.map((item) => (
-                            <ListItem key={item} disablePadding>
-                                <ListItemButton onClick={(e) => {
-                                    handleNavigate(e, item); setDrawerOpen(false);
-                                }}>
-                                    <ListItemText primary={item} />
-                                </ListItemButton>
-                            </ListItem>
+                  // Dropdown (Categories / Products / Transactions)
+                  const title = Object.keys(item)[0];
+                  const subItems = Object.values(item)[0];
+
+                  return (
+                    <React.Fragment key={index}>
+                      <Button
+                        onClick={(e) => openSubMenu(e, title)}
+                        endIcon={<KeyboardArrowDownIcon sx={{ fontSize: 18 }} />}
+                        sx={{
+                          color: "#444",
+                          textTransform: "none",
+                          fontSize: "0.95rem",
+                          px: 1.5,
+                          py: 1,
+                          borderRadius: "10px",
+                          "&:hover": {
+                            backgroundColor: "#f6f6f6",
+                            color: "goldenrod",
+                          },
+                        }}
+                      >
+                        {title}
+                      </Button>
+
+                      <Menu
+                        anchorEl={menuAnchor}
+                        open={currentSubMenu === title}
+                        onClose={closeSubMenu}
+                        TransitionComponent={Fade}
+                        PaperProps={{
+                          elevation: 3,
+                          sx: {
+                            mt: 1,
+                            borderRadius: "10px",
+                            minWidth: 200,
+                          },
+                        }}
+                      >
+                        {subItems.map((sub: string, i: number) => (
+                          <MenuItem
+                            key={i}
+                            onClick={() => {
+                              handleNavigate(sub);
+                              closeSubMenu();
+                            }}
+                          >
+                            {sub}
+                          </MenuItem>
                         ))}
-                    </List>
-                </Box>
-            </Drawer>
-        </>
-    );
+                      </Menu>
+                    </React.Fragment>
+                  );
+                })}
+              </Box>
+            )}
+          </Box>
+
+          {/* RIGHT SIDE (Avatar + Mobile Menu) */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {isMobile && (
+              <IconButton onClick={() => setDrawerOpen(true)}>
+                <MenuIcon />
+              </IconButton>
+            )}
+
+            <Tooltip title="Account Settings">
+              <Avatar
+                sx={{ width: 38, height: 38, cursor: "pointer" }}
+                onClick={handleAvatarClick}
+                src="https://i.pravatar.cc/80"
+              />
+            </Tooltip>
+          </Box>
+
+          {/* Avatar Popup */}
+          <Menu
+            anchorEl={avatarMenuAnchor}
+            open={Boolean(avatarMenuAnchor)}
+            onClose={closeAvatarMenu}
+            PaperProps={{ sx: { borderRadius: "12px", mt: 1 } }}
+          >
+            <MenuItem onClick={closeAvatarMenu}>My Profile</MenuItem>
+            <MenuItem onClick={closeAvatarMenu}>Notifications</MenuItem>
+            <MenuItem onClick={closeAvatarMenu}>Settings</MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
+              Logout
+            </MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
+
+      {/* MOBILE DRAWER */}
+      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <Box sx={{ width: 260 }}>
+          <Typography
+            sx={{ fontWeight: 600, p: 2, borderBottom: "1px solid #eee", fontSize: "1.1rem" }}
+          >
+            Inventory Menu
+          </Typography>
+
+          <List>
+            {navItems.map((item, index) => {
+              if (typeof item === "string") {
+                return (
+                  <ListItem key={index} disablePadding>
+                    <ListItemButton
+                      onClick={() => {
+                        handleNavigate(item);
+                        setDrawerOpen(false);
+                      }}
+                    >
+                      <ListItemText primary={item} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              }
+
+              const title = Object.keys(item)[0];
+              const subItems = Object.values(item)[0];
+
+              return (
+                <React.Fragment key={index}>
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <ListItemText primary={title} />
+                    </ListItemButton>
+                  </ListItem>
+
+                  {subItems.map((sub: string, i: number) => (
+                    <ListItem key={i} disablePadding sx={{ pl: 4 }}>
+                      <ListItemButton
+                        onClick={() => {
+                          handleNavigate(sub);
+                          setDrawerOpen(false);
+                        }}
+                      >
+                        <ListItemText primary={sub} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </React.Fragment>
+              );
+            })}
+          </List>
+        </Box>
+      </Drawer>
+    </>
+  );
 };
 
 export default Header;

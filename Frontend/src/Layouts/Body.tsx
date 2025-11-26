@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import Products from "../Pages/Products";
@@ -10,6 +10,12 @@ import AddTransaction from "../Pages/AddTransaction";
 const Reports = () => <h1>Reports</h1>;
 
 const Body: React.FC = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+
+    }, [pathname]);
     return (
         <Box
             sx={{
@@ -28,25 +34,25 @@ const Body: React.FC = () => {
                     }
                 />
                 <Route
-                    path="/products"
+                    path="/view-products"
                     element={
                         <Products />
                     }
                 />
                 <Route
-                    path="/categories"
+                    path="/view-categories"
                     element={
                         <Categories />
                     }
                 />
                 <Route
-                    path="/transactions"
+                    path="/view-transactions"
                     element={
                         <Transactions />
                     }
                 />
                 <Route
-                    path="/create-transaction"
+                    path="/make-transaction"
                     element={
                         <AddTransaction />
                     }
