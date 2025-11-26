@@ -304,7 +304,7 @@ export const getRecentTransactionsByType = async (req: Request, res: Response, n
                     attributes: ["productName", "sku", "price", "quantity"]
                 }
             ],
-            order:[["createdAt", "DESC"]]
+            order: [["createdAt", "DESC"]]
         });
 
         if (count === 0) {
@@ -312,6 +312,41 @@ export const getRecentTransactionsByType = async (req: Request, res: Response, n
         }
 
         return res.status(200).json({ count, transactions });
+    } catch (error: unknown) {
+        next(error as Error);
+    }
+};
+
+export const getTopDemandTransactions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const transactions = await Transaction.findAll({
+            attributes: [
+                "productid",
+                [sequelize.fn("COUNT", sequelize.col("Transaction.transactionid")), "total_transactions"],
+                [sequelize.fn("SUM", sequelize.col("Transaction.quantity")), "total_quantity"],
+                [sequelize.literal(`SUM("Transaction"."quantity") * "product"."price"`), "total_sales"],
+            ],
+            include: [
+                {
+                    model: Product,
+                    as: "product",
+                    attributes: ["productName", "sku", "price"],
+                },
+            ],
+            where: {
+                type: "OUT",
+            },
+            group: ["Transaction.productid", "product.productid"],
+            having: sequelize.literal(`COUNT("Transaction"."transactionid") > 1`),
+            order: [[sequelize.literal("total_transactions"), "DESC"]],
+            limit: 10,
+        });
+
+        if (!transactions.length) {
+            return res.status(404).json({ message: "No transactions found" });
+        }
+
+        return res.status(200).json({ count:transactions.length, transactions });
     } catch (error: unknown) {
         next(error as Error);
     }
