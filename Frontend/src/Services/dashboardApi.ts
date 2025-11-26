@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../Store/store";
-import type { GetProductsResponse } from "../Interfaces/IProduct";
-import type { GetTransactionsResponse } from "../Interfaces/ITransaction";
 
 export interface DashboardSummary {
     productCount: number;
@@ -36,14 +34,7 @@ export const dashboardApi = createApi({
                 totalPurchase: Number(response.totalPurchase.totalPurchase),
             }),
         }),
-        getLowStockProducts: builder.query<GetProductsResponse, void>({
-            query: () => "/product/stock/low"
-        }),
-         getRecentTransactionByType: builder.query<GetTransactionsResponse, { type: string; limit: number }>({
-            query: ({type,limit}) => `/transaction/recent/desc?type=${type}&limit=${limit}`,
-            
-        }),
     }),
 });
 
-export const { useGetDashboardSummaryQuery, useGetLowStockProductsQuery,useGetRecentTransactionByTypeQuery } = dashboardApi;
+export const { useGetDashboardSummaryQuery } = dashboardApi;

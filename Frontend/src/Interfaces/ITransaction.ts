@@ -21,3 +21,16 @@ export interface GetTransactionsResponse {
   count: number;
   transactions: Transaction[];
 }
+
+export interface GetDemandSalesResponse {
+  count: number;
+  transactions: {
+    productid: number;
+    total_transactions: number;
+    total_quantity: number;
+    total_sales: string; 
+    productName: string;
+    sku: string;
+    price: string;
+  }[];
+}

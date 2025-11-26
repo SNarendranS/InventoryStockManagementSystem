@@ -7,6 +7,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import StarPurple500Icon from '@mui/icons-material/StarPurple500';
 import PaidIcon from '@mui/icons-material/Paid';
 import { useNavigate } from "react-router-dom";
 import { useGetDashboardSummaryQuery } from "../../Services/dashboardApi";
@@ -15,9 +16,10 @@ type Props = {
     onLowStockClick?: () => void;
     inTransactionClick?: () => void;
     outTransactionClick?: () => void;
+    demandSalesClick?: () => void;
 };
 
-const Summary: React.FC<Props> = ({ onLowStockClick, inTransactionClick, outTransactionClick }) => {
+const Summary: React.FC<Props> = ({ onLowStockClick, inTransactionClick, outTransactionClick, demandSalesClick }) => {
     const { data, isLoading, isError, error } = useGetDashboardSummaryQuery();
     const navigate = useNavigate();
 
@@ -32,12 +34,13 @@ const Summary: React.FC<Props> = ({ onLowStockClick, inTransactionClick, outTran
         );
 
     const metrics = [
-        { label: "Total Products", value: data?.productCount, icon: <Inventory2Icon />, bg: "#E3F2FD", iconColor: "#1976D2", onClick: () => navigate('/products') },
-        { label: "Total Categories", value: data?.categoryCount, icon: <CategoryIcon />, bg: "#F3E5F5", iconColor: "#9C27B0", onClick: () => navigate('/products') },
+        { label: "Total Products", value: data?.productCount, icon: <Inventory2Icon />, bg: "#E3F2FD", iconColor: "#1976D2", onClick: () => navigate('/view-products') },
+        { label: "Total Categories", value: data?.categoryCount, icon: <CategoryIcon />, bg: "#F3E5F5", iconColor: "#9C27B0", onClick: () => navigate('/view-categories') },
         { label: "Low Stock Products", value: data?.lowStock, icon: <LocalShippingIcon />, bg: "#FFEBEE", iconColor: "#D32F2F", onClick: onLowStockClick },
-        { label: "Sales Count", value: data?.salesCount, icon: <ShoppingCartIcon />, bg: "#E8F5E9", iconColor: "#388E3C", onClick: () => navigate('/transactions') },
+        { label: "Top Seller", value: data?.salesCount, icon: <StarPurple500Icon />, bg: "#fffad3ff", iconColor: "#ffd900ff", onClick: demandSalesClick },
+        { label: "Sales Count", value: data?.salesCount, icon: <ShoppingCartIcon />, bg: "#E8F5E9", iconColor: "#388E3C", onClick: () => navigate('/view-transactions') },
         { label: "Total Sales", value: `₹${data?.totalSales.toLocaleString()}`, icon: <MonetizationOnIcon />, bg: "#FFF3E0", iconColor: "#F57C00", onClick: outTransactionClick },
-        { label: "New Stock Count", value: data?.newStockCount, icon: <AddBoxIcon />, bg: "#E1F5FE", iconColor: "#0288D1", onClick: () => navigate('/transactions') },
+        { label: "New Stock Count", value: data?.newStockCount, icon: <AddBoxIcon />, bg: "#E1F5FE", iconColor: "#0288D1", onClick: () => navigate('/view-transactions') },
         { label: "Total Purchase", value: `₹${data?.totalPurchase.toLocaleString()}`, icon: <PaidIcon />, bg: "#F3E5F5", iconColor: "#7B1FA2", onClick: inTransactionClick },
     ];
 
