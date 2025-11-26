@@ -11,6 +11,7 @@ const Categories: React.FC = () => {
     const columns = [
         { key: "categoryid", label: "ID" },
         { key: "categoryName", label: "Name" },
+        { key: "categoryPrefix", label: "Prefix" },
         { key: "categoryDescription", label: "Description" }
     ];
 

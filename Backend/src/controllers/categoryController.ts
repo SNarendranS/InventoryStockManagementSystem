@@ -6,7 +6,7 @@ import { CategoryCreationAttributes } from "../interfaces/ICategory";
 export const getAllCategory = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const categories = await Category.findAll({
-            attributes: ["categoryid", "categoryName", "categoryDescription"]
+            attributes: ["categoryid", "categoryName", "categoryPrefix", "categoryDescription"]
         });
 
         return res.status(200).json({ count: categories.length, categories });
@@ -37,7 +37,7 @@ export const createCategory = async (
     next: NextFunction
 ) => {
     try {
-        const { categoryName, categoryDescription } = req.body;
+        const { categoryName, categoryPrefix, categoryDescription } = req.body;
 
         if (!categoryName) {
             return res.status(400).json({ message: "Category name is required" });

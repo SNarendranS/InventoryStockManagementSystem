@@ -1,8 +1,8 @@
 import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
-import { useGetProductsQuery } from "../Services/productApi";
-import type { Product } from "../Interfaces/IProduct";
-import DataTable from "../Components/DataTable";
+import { useGetProductsQuery } from "../../Services/productApi";
+import type { Product } from "../../Interfaces/IProduct";
+import DataTable from "../../Components/DataTable";
 
 const Products: React.FC = () => {
     const { data, error, isLoading } = useGetProductsQuery();
@@ -12,6 +12,7 @@ const Products: React.FC = () => {
 
     const columns = [
         { key: "productid", label: "ID" },
+        { key: "sku", label: "SKU" },
         { key: "productName", label: "Name" },
         { key: "price", label: "Price", render: (row: Product) => `₹${row.price}` },
         { key: "quantity", label: "Stock" },

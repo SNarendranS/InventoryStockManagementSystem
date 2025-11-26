@@ -11,9 +11,9 @@ import {
     Alert,
     Divider,
 } from "@mui/material";
-import { useCreateTransactionMutation } from "../Services/transactionApi";
-import { useGetCategoriesQuery } from "../Services/categoryApi";
-import { useGetProductsByCategoryQuery } from "../Services/productApi";
+import { useCreateTransactionMutation } from "../../Services/transactionApi";
+import { useGetCategoriesQuery } from "../../Services/categoryApi";
+import { useGetProductsByCategoryQuery } from "../../Services/productApi";
 import { Info, Error } from "@mui/icons-material";
 
 const AddTransaction: React.FC = () => {
@@ -108,7 +108,7 @@ const AddTransaction: React.FC = () => {
                         <MenuItem value="">Select Category</MenuItem>
                         {categories.map((c: any) => (
                             <MenuItem key={c.categoryid} value={c.categoryid}>
-                                {c.categoryName}
+                                {`${c.categoryName} - ${c.categoryPrefix}`}
                             </MenuItem>
                         ))}
                     </TextField>
@@ -208,8 +208,8 @@ const AddTransaction: React.FC = () => {
                         type="submit"
                         variant="contained"
                         fullWidth
-                        disabled={isLoading ||error!==""}
-                        sx={{ mt: 3, py: 1.5, fontWeight: "bold" }}
+                        disabled={isLoading || error !== ""}
+                        sx={{ mt: 3, py: 1.5, fontWeight: "bold",background:"goldenrod" }}
                     >
                         {isLoading ? <CircularProgress size={22} /> : "Create Transaction"}
                     </Button>

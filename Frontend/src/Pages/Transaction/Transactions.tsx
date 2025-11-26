@@ -1,8 +1,8 @@
 import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
-import { useGetTransactionsQuery } from "../Services/transactionApi";
-import type { Transaction } from "../Interfaces/ITransaction";
-import DataTable from "../Components/DataTable";
+import { useGetTransactionsQuery } from "../../Services/transactionApi";
+import type { Transaction } from "../../Interfaces/ITransaction";
+import DataTable from "../../Components/DataTable";
 
 const Transactions: React.FC = () => {
     const { data, error, isLoading } = useGetTransactionsQuery();

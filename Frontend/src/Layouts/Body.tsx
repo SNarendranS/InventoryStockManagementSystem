@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import Dashboard from "../Pages/Dashboard/Dashboard";
-import Products from "../Pages/Products";
-import Transactions from "../Pages/Transactions";
+import Products from "../Pages/Products/Products";
+import Transactions from "../Pages/Transaction/Transactions";
 import Categories from "../Pages/Categories";
-import AddTransaction from "../Pages/AddTransaction";
+import AddTransaction from "../Pages/Transaction/AddTransaction";
+import AddProduct from "../Pages/Products/AddProduct";
 
 const Reports = () => <h1>Reports</h1>;
 
@@ -55,6 +56,12 @@ const Body: React.FC = () => {
                     path="/make-transaction"
                     element={
                         <AddTransaction />
+                    }
+                />
+                <Route
+                    path="/add-product"
+                    element={
+                        <AddProduct />
                     }
                 />
                 <Route
