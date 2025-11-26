@@ -167,7 +167,7 @@ function DataTable<T extends Record<string, any>>({
         </TableContainer>
 
         {/* Pagination */}
-        <Box sx={{ py: 2, display: "flex", justifyContent: "center" }}>
+        {totalPages > 1 && <Box sx={{ py: 2, display: "flex", justifyContent: "center" }}>
           <Pagination
             count={totalPages || 1}
             page={page}
@@ -175,7 +175,7 @@ function DataTable<T extends Record<string, any>>({
             color="primary"
             size="small"
           />
-        </Box>
+        </Box>}
       </Card>
     </Box>
   );

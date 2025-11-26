@@ -126,8 +126,8 @@ const Header: React.FC = () => {
                                             borderRadius: "8px",
                                             transition: "0.2s",
                                             "&:hover": {
-                                                backgroundColor: "#f2f2f2"
-                                            }
+                                                backgroundColor: "#f2f2f2",
+                                                color:"goldenrod"                                            }
                                         }}
                                     >
                                         {item}

@@ -42,7 +42,7 @@ const Summary: React.FC<Props> = ({ onLowStockClick, inTransactionClick, outTran
     ];
 
     return (
-        <Grid container spacing={3} sx={{ justifyContent: "center" }}>
+        <Grid container spacing={4} sx={{ justifyContent: "center" }}>
             {metrics.map(metric => (
                 <Grid key={metric.label}>
                     <GenericCard
