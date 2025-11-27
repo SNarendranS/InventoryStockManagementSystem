@@ -102,7 +102,7 @@ const Transactions: React.FC = () => {
             label: "Edit",
             icon: (row: Transaction) => (
                 <IconButton onClick={() => handleEdit(row)}>
-                    <Edit sx={{ color: "blue" }} />
+                    <Edit sx={{ color: "#8592afff" }} />
                 </IconButton>
             )
         }
@@ -113,7 +113,7 @@ const Transactions: React.FC = () => {
                 label: "Delete",
                 icon: (row: Transaction) => (
                     <IconButton onClick={() => handleDelete(row)}>
-                        <Delete sx={{ color: "red" }} />
+                        <Delete sx={{ color: "#c9371dff" }} />
                     </IconButton>
                 )
             }]
