@@ -26,9 +26,8 @@ Category.init(
             type: DataTypes.STRING(4),
             allowNull: false,
             validate: {
-                length: [3, 4]
-            },
-            defaultValue: "GEN"
+                len: [3, 4]
+            }
         },
         categoryDescription: {
             type: DataTypes.STRING(255),

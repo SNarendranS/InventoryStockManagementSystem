@@ -55,6 +55,8 @@ const Header: React.FC = () => {
           { Categories: ["View Categories", "Add Category", "Update Category", "Delete Category"] },
           { Products: ["View Products", "Add Product", "Update Product", "Delete Product"] },
           { Transactions: ["View Transactions", "Make Transaction", "Update Transaction", "Delete Transaction"] },
+          { "Your Team": ["View Employees", "Add Employee", "Edit Employee", "Delete Employee"] },
+
           "Reports"
         ];
       case "manager":
@@ -63,13 +65,14 @@ const Header: React.FC = () => {
           { Categories: ["View Categories", "Add Category", "Update Category"] },
           { Products: ["View Products", "Add Product", "Update Product"] },
           { Transactions: ["View Transactions", "Make Transaction", "Update Transaction"] },
+          { "Your Team": ["View Employees"] },
           "Reports"
         ];
       case "employee":
         return [
           "Dashboard",
-          { Categories: ["View Categories"] },
-          { Products: ["View Products"] },
+          "View Categories",
+          "View Products",
           { Transactions: ["View Transactions", "Make Transaction"] }
         ];
       default:

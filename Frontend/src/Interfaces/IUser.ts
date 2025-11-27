@@ -1,10 +1,20 @@
 export interface User {
-  userid: string;
+  userid: number;
+  name: string;
   email: string;
   role: string;
+  managerid: number;
+  createdAt: Date;
+  manager?: User;
+}
+export interface CreateUserPayload {
+  name: string;
+  email: string;
+  role: string;
+  managerid: number;
 }
 
-export interface UserTokenState {
-  token: string | null;
-  user: User | null;
+export interface GetUserResponse {
+  count: number;
+  users: User[];
 }

@@ -4,8 +4,9 @@ import { User } from "../models/User";
 export const getAllUsers = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const { count, rows: users } = await User.findAndCountAll({
-      attributes: ["userid", "name", "email", "role"],
-      include: [{ model: User, as: "manager", attributes: ["userid", "name", "email"] }]
+      attributes: ["userid", "name", "email", "role","managerid","createdAt"],
+      include: [{ model: User, as: "manager", attributes: ["name", "email","role"] }],
+      order:[["createdAt","DESC"]]
     });
     res.status(200).json({
       count,
@@ -14,6 +15,7 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
     );
 
   } catch (error: unknown) {
+    console.log(error)
     next(error as Error)
   }
 };
@@ -22,7 +24,7 @@ export const getEmployeesByManager = async (req: Request, res: Response, next: N
   try {
     const { managerid } = req.params
     const { count, rows: users } = await User.findAndCountAll({
-      attributes: ["userid", "name", "email", "password", "role"],
+      attributes: ["userid", "name", "email", "role","createdAt"],
       where: { managerid }
     });
     res.status(200).json({

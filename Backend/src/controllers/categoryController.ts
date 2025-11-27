@@ -2,25 +2,66 @@ import { NextFunction, Request, Response } from "express";
 import { Category } from "../models/Category";
 import { Product } from "../models/Product";
 import { CategoryCreationAttributes } from "../interfaces/ICategory";
+import { sequelize } from "../config/database";
+import { count } from "console";
+
 
 export const getAllCategory = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const categories = await Category.findAll({
-            attributes: ["categoryid", "categoryName", "categoryPrefix", "categoryDescription"]
+            attributes: [
+                "categoryid",
+                "categoryName",
+                "categoryDescription",
+                "categoryPrefix",
+                "createdAt",
+                [sequelize.fn("COUNT", sequelize.col("products.productid")), "productCount"]
+            ],
+            include: [
+                {
+                    model: Product,
+                    attributes: [],
+                    as:"products",
+                    required: false
+                }
+            ],
+            group: ["Category.categoryid"],
+            order: [["categoryid", "ASC"]]
         });
 
-        return res.status(200).json({ count: categories.length, categories });
+        return res.status(200).json({ count:categories.length, categories });
+
     } catch (error: unknown) {
         next(error as Error);
     }
 };
 
+
 export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { categoryid } = req.params;
 
-        const category = await Category.findByPk(categoryid);
-
+ const category = await Category.findOne({
+            attributes: [
+                "categoryid",
+                "categoryName",
+                "categoryDescription",
+                "categoryPrefix",
+                "createdAt",
+                [sequelize.fn("COUNT", sequelize.col("products.productid")), "productCount"]
+            ],
+            include: [
+                {
+                    model: Product,
+                    attributes: [],
+                    as:"products",
+                    required: false
+                }
+            ],
+            group: ["Category.categoryid"],
+            order: [["categoryid", "ASC"]],
+            where:{categoryid}
+        });
         if (!category) {
             return res.status(404).json({ message: "Category not found" });
         }
@@ -37,6 +78,7 @@ export const createCategory = async (
     next: NextFunction
 ) => {
     try {
+        console.log(req.body)
         const { categoryName, categoryPrefix, categoryDescription } = req.body;
 
         if (!categoryName) {
@@ -45,6 +87,7 @@ export const createCategory = async (
 
         const category = await Category.create({
             categoryName,
+            categoryPrefix,
             categoryDescription
         });
 
@@ -53,6 +96,8 @@ export const createCategory = async (
             category
         });
     } catch (error: unknown) {
+        console.log(error)
+
         next(error as Error);
     }
 };
