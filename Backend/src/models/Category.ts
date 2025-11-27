@@ -40,9 +40,15 @@ Category.init(
         timestamps: true,
         hooks: {
             beforeCreate: async (category: Category) => {
+                if (!category.categoryPrefix) {
+                    category.categoryPrefix = category.categoryName.slice(0, 4)
+                }
                 category.categoryPrefix = category.categoryPrefix.toUpperCase()
             },
             beforeUpdate: async (category: Category) => {
+                if (!category.categoryPrefix) {
+                    category.categoryPrefix = category.categoryName.slice(0, 4)
+                }
                 category.categoryPrefix = category.categoryPrefix.toUpperCase()
             },
         },

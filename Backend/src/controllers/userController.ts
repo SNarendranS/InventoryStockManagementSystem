@@ -4,9 +4,9 @@ import { User } from "../models/User";
 export const getAllUsers = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const { count, rows: users } = await User.findAndCountAll({
-      attributes: ["userid", "name", "email", "role","managerid","createdAt"],
-      include: [{ model: User, as: "manager", attributes: ["name", "email","role"] }],
-      order:[["createdAt","DESC"]]
+      attributes: ["userid", "name", "email", "role", "managerid", "createdAt"],
+      include: [{ model: User, as: "manager", attributes: ["name", "email", "role"] }],
+      order: [["createdAt", "DESC"]]
     });
     res.status(200).json({
       count,
@@ -24,7 +24,8 @@ export const getEmployeesByManager = async (req: Request, res: Response, next: N
   try {
     const { managerid } = req.params
     const { count, rows: users } = await User.findAndCountAll({
-      attributes: ["userid", "name", "email", "role","createdAt"],
+      attributes: ["userid", "name", "email", "role", "createdAt"],
+      include: [{ model: User, as: "manager", attributes: ["name", "email", "role"] }],
       where: { managerid }
     });
     res.status(200).json({

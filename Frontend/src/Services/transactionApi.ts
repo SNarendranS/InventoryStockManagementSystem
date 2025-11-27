@@ -12,7 +12,7 @@ export const transactionApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Transactions", "Products"],   // ⭐ Add this
+  tagTypes: ["Transactions", "Products"],
   endpoints: (builder) => ({
     getTransactions: builder.query<GetTransactionsResponse, void>({
       query: () => "/transaction",
@@ -25,26 +25,34 @@ export const transactionApi = createApi({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Transactions", "Products"],  // ⭐ Auto-refresh after mutation
+      invalidatesTags: ["Transactions", "Products"],
     }),
     getRecentTransactionByType: builder.query<GetTransactionsResponse, { type: string; limit: number }>({
       query: ({ type, limit }) => `/transaction/recent/desc?type=${type}&limit=${limit}`,
     }),
     getDemandSalesTransactions: builder.query<GetDemandSalesResponse, void>({
-  query: () => `/transaction/demand/sales`,
-  transformResponse: (response: any) => ({
-    count: response.count,
-    transactions: response.transactions.map((t: any) => ({
-      productid: t.productid,
-      total_transactions: Number(t.total_transactions),
-      total_quantity: Number(t.total_quantity),
-      total_sales: t.total_sales,
-      productName: t.product.productName,
-      sku: t.product.sku,
-      price: t.product.price,
-    }))
-  })
-})
+      query: () => `/transaction/demand/sales`,
+      transformResponse: (response: any) => ({
+        count: response.count,
+        transactions: response.transactions.map((t: any) => ({
+          productid: t.productid,
+          total_transactions: Number(t.total_transactions),
+          total_quantity: Number(t.total_quantity),
+          total_sales: t.total_sales,
+          productName: t.product.productName,
+          sku: t.product.sku,
+          price: t.product.price,
+        }))
+      })
+    }),
+    deleteTransaction: builder.mutation<void, { id: number }>({
+      query: ({ id }) => ({
+        url: `/transaction/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Transactions"],
+
+    })
   })
 })
 
@@ -52,5 +60,6 @@ export const {
   useGetTransactionsQuery,
   useCreateTransactionMutation,
   useGetDemandSalesTransactionsQuery,
-  useGetRecentTransactionByTypeQuery
+  useGetRecentTransactionByTypeQuery,
+  useDeleteTransactionMutation
 } = transactionApi;

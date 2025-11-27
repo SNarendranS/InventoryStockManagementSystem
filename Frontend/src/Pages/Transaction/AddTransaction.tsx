@@ -84,7 +84,7 @@ const AddTransaction: React.FC = () => {
             disabled: values.categoryid === 0 || products.length === 0,
             options: products.map((p: any) => ({
                 value: p.productid,
-                label: `${p.productName} (Stock: ${p.quantity}, SKU: ${p.sku})`,
+                label: `${p.productName} - ${p.sku}`,
             })),
         },
         {

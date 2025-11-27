@@ -4,7 +4,6 @@ import { Category } from "../models/Category";
 import { col, fn, literal, Op, where } from "sequelize";
 import { Transaction } from "../models/Transaction";
 import { TransactionType } from "../enums/EtransactionType";
-import { count } from "console";
 import { sequelize } from "../config/database";
 
 export const getdashboardSummary = async (_req: Request, res: Response, next: NextFunction) => {

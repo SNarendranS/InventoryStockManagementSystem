@@ -1,14 +1,18 @@
 import React from "react";
 import { CircularProgress, Typography } from "@mui/material";
-import { useGetUsersQuery } from "../../Services/userApi";
+import { useGetUsersByManagerQuery, useGetUsersQuery } from "../../Services/userApi";
 import DataTable from "../../Components/DataTable";
 import type { User } from "../../Interfaces/IUser";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../Store/store";
 
 const Users: React.FC = () => {
-    const { data, error, isLoading } = useGetUsersQuery();
+        const user = useSelector((state: RootState) => state.userToken.user);
+
+    const { data, error, isLoading } = user.role=="admin"?useGetUsersQuery():useGetUsersByManagerQuery(user.userid)
 
     if (isLoading) return <CircularProgress />;
-    if (error) return <Typography color="error">Failed to load transactions</Typography>;
+    if (error) return <Typography color="error">Failed to load Employees</Typography>;
     console.log("data ", data)
     const columns = [
         { key: "userid", label: "ID" },
