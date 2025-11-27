@@ -27,8 +27,7 @@ Category.init(
             allowNull: false,
             validate: {
                 length: [3, 4]
-            },
-            defaultValue: "GEN"
+            }
         },
         categoryDescription: {
             type: DataTypes.STRING(255),

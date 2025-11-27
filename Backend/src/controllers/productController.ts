@@ -103,8 +103,7 @@ export const createProduct = async (
             return res.status(400).json({ message: "No data received" });
         }
 
-        const { productName, productDescription, sku, price, quantity, categoryid } = req.body;
-
+        const { productName, productDescription, restockLevel, sku, price, quantity, categoryid } = req.body;
         if (!productName || !sku || price == null || quantity == null) {
             return res.status(400).json({ message: "Missing required fields" });
         }
@@ -112,10 +111,16 @@ export const createProduct = async (
         if (!category) {
             return res.status(400).json({ message: "Invalid category ID" });
         }
+        const existingProduct = await Product.findOne({ where: { sku } });
+        if (existingProduct) {
+            console.log(existingProduct)
+            return res.status(400).json({ message: `product with same SKU${existingProduct.sku} exists`});
+        }
         const product = await Product.create({
             productName,
             productDescription,
             sku,
+            restockLevel,
             price,
             quantity,
             categoryid
@@ -126,6 +131,7 @@ export const createProduct = async (
             product
         });
     } catch (error: unknown) {
+        console.log(error)
         next(error as Error);
     }
 };
@@ -196,7 +202,7 @@ export const updateProduct = async (
         }
 
         const { productid } = req.params;
-        const fieldsToUpdate:Partial<ProductCreationAttributes> = Object.fromEntries(
+        const fieldsToUpdate: Partial<ProductCreationAttributes> = Object.fromEntries(
             Object.entries(req.body).filter(([_, value]) => value !== undefined)
         );
 

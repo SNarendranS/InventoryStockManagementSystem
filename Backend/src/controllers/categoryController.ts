@@ -37,6 +37,7 @@ export const createCategory = async (
     next: NextFunction
 ) => {
     try {
+        console.log(req.body)
         const { categoryName, categoryPrefix, categoryDescription } = req.body;
 
         if (!categoryName) {
@@ -45,6 +46,7 @@ export const createCategory = async (
 
         const category = await Category.create({
             categoryName,
+            categoryPrefix,
             categoryDescription
         });
 
@@ -53,6 +55,8 @@ export const createCategory = async (
             category
         });
     } catch (error: unknown) {
+                console.log(error)
+
         next(error as Error);
     }
 };

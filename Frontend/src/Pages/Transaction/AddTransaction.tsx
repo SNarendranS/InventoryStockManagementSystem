@@ -1,47 +1,59 @@
 import React, { useState, useEffect } from "react";
-import {
-    Button,
-    TextField,
-    MenuItem,
-    CircularProgress,
-    Card,
-    CardContent,
-    Typography,
-    Box,
-    Alert,
-    Divider,
-} from "@mui/material";
-import { useCreateTransactionMutation } from "../../Services/transactionApi";
+import FormWrapper from "../../Components/DynamicForm/FormWrapper";
+import DynamicForm from "../../Components/DynamicForm/DynamicForm";
 import { useGetCategoriesQuery } from "../../Services/categoryApi";
 import { useGetProductsByCategoryQuery } from "../../Services/productApi";
-import { Info, Error } from "@mui/icons-material";
+import { useCreateTransactionMutation } from "../../Services/transactionApi";
+import { Box, Typography, Alert } from "@mui/material";
+import { Info, Error as ErrorIcon } from "@mui/icons-material";
+
+interface TransactionInput {
+    categoryid: number;
+    productid: number;
+    type: "IN" | "OUT";
+    quantity: number;
+    note: string;
+}
 
 const AddTransaction: React.FC = () => {
-    const { data: categoriesData, isLoading: loadingCategories } = useGetCategoriesQuery();
-    const categories = categoriesData?.categories || [];
 
-    const [categoryid, setCategoryid] = useState<number | null>(null);
-    const { data: productsData, isLoading: loadingProducts } = useGetProductsByCategoryQuery(
-        { categoryid: categoryid! },
-        { skip: categoryid === null }
+    // Fetch Categories
+    const { data: categoryRes, isLoading: loadingCategories } = useGetCategoriesQuery();
+    const categories = categoryRes?.categories || [];
+
+    // State
+    const [values, setValues] = useState<TransactionInput>({
+        categoryid: 0,
+        productid: 0,
+        type: "IN",
+        quantity: 1,
+        note: ""
+    });
+
+    // Fetch Products based on selected Category
+    const { data: productRes, isLoading: loadingProducts } = useGetProductsByCategoryQuery(
+        { categoryid: values.categoryid },
+        { skip: values.categoryid === 0 }
     );
-    const products = productsData?.products || [];
+    const products = productRes?.products || [];
 
     const [createTransaction, { isLoading }] = useCreateTransactionMutation();
+    const [error, setError] = useState("");
 
-    const [productid, setProductid] = useState<number | null>(null);
-    const [type, setType] = useState<"IN" | "OUT">("IN");
-    const [quantity, setQuantity] = useState<number>(1);
-    const [note, setNote] = useState("");
-    const [error, setError] = useState<string>("");
+    // Currently selected product
+    const selectedProduct =
+        products.find((p: any) => p.productid === values.productid) || null;
 
-    const selectedProduct = products.find((p: any) => p.productid === productid) || null;
+    // Low stock warning
     const isLowStock =
-        selectedProduct && type === "OUT" && selectedProduct.quantity <= selectedProduct.restockLevel;
+        selectedProduct &&
+        values.type === "OUT" &&
+        selectedProduct.quantity <= selectedProduct.restockLevel;
 
+    // Validation when quantity/type changes
     useEffect(() => {
-        if (type === "OUT" && selectedProduct) {
-            if (quantity > selectedProduct.quantity) {
+        if (values.type === "OUT" && selectedProduct) {
+            if (values.quantity > selectedProduct.quantity) {
                 setError(`Only ${selectedProduct.quantity} in stock`);
             } else {
                 setError("");
@@ -49,173 +61,120 @@ const AddTransaction: React.FC = () => {
         } else {
             setError("");
         }
-    }, [quantity, type, selectedProduct]);
+    }, [values.quantity, values.type, selectedProduct]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!categoryid) return setError("Please select a category");
-        if (!productid) return setError("Please select a product");
-        if (quantity <= 0) return setError("Quantity must be greater than 0");
+    // Dynamic Form Field Schema
+    const fields = [
+        {
+            name: "categoryid",
+            label: "Category",
+            type: "select",
+            options: categories.map((c: any) => ({
+                value: c.categoryid,
+                label: `${c.categoryName} - ${c.categoryPrefix}`,
+            })),
+            onChange: (v: number) => {
+                setValues({ ...values, categoryid: v, productid: 0 });
+            }
+        },
+        {
+            name: "productid",
+            label: "Product",
+            type: "select",
+            disabled: values.categoryid === 0 || products.length === 0,
+            options: products.map((p: any) => ({
+                value: p.productid,
+                label: `${p.productName} (Stock: ${p.quantity}, SKU: ${p.sku})`,
+            })),
+        },
+        {
+            name: "type",
+            label: "Transaction Type",
+            type: "select",
+            options: [
+                { value: "IN", label: "IN (Stock In)" },
+                { value: "OUT", label: "OUT (Stock Out)" }
+            ]
+        },
+        {
+            name: "quantity",
+            label: "Quantity",
+            type: "number"
+        },
+        {
+            name: "note",
+            label: "Note (Optional)"
+        }
+    ];
 
-        if (isLowStock && quantity > selectedProduct!.quantity) {
-            return setError(`Not enough stock available!`);
+    // Extra UI below fields — stock box
+    const extra = selectedProduct && (
+        <Box
+            sx={{
+                mt: 2,
+                p: 1.2,
+                borderRadius: 1.5,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                bgcolor: isLowStock ? "warning.light" : "info.light",
+                border: "1px solid",
+                borderColor: isLowStock ? "warning.main" : "info.main",
+            }}
+        >
+            {isLowStock ? <ErrorIcon color="warning" /> : <Info color="info" />}
+            <Typography fontSize={14}>
+                Stock: <b>{selectedProduct.quantity}</b> |
+                Re-Stock Level: <b>{selectedProduct.restockLevel}</b>
+            </Typography>
+        </Box>
+    );
+
+    const handleSubmit = async () => {
+        if (!values.categoryid) return setError("Please select a category");
+        if (!values.productid) return setError("Please select a product");
+        if (values.quantity <= 0) return setError("Quantity must be greater than 0");
+
+        if (isLowStock && values.quantity > selectedProduct!.quantity) {
+            return setError("Not enough stock available!");
         }
 
-        setError("");
-
         try {
-            await createTransaction({ productid, type, quantity, note }).unwrap();
-            setCategoryid(null);
-            setProductid(null);
-            setQuantity(1);
-            setType("IN");
-            setNote("");
+            await createTransaction(values).unwrap();
             alert("Transaction created successfully!");
-        } catch (err) {
+
+            // Reset form
+            setValues({
+                categoryid: 0,
+                productid: 0,
+                type: "IN",
+                quantity: 1,
+                note: ""
+            });
+
+            setError("");
+        } catch {
             setError("Failed to create transaction");
         }
     };
 
-    if (loadingCategories || loadingProducts) return <CircularProgress sx={{ display: "block", mx: "auto", mt: 5 }} />;
+    if (loadingCategories || loadingProducts) {
+        return <Typography sx={{ mt: 5, textAlign: "center" }}>Loading...</Typography>;
+    }
 
     return (
-        <Card sx={{ maxWidth: 500, margin: "40px auto", p: 3, borderRadius: 3, boxShadow: 3 }}>
-            <CardContent>
-                <Typography variant="h5" fontWeight="bold" gutterBottom>
-                    Create New Transaction
-                </Typography>
+        <FormWrapper title="Create New Transaction">
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-                <Typography variant="body2" color="text.secondary" mb={2}>
-                    Record stock IN or OUT movement for a product.
-                </Typography>
-
-                <Divider sx={{ mb: 3 }} />
-
-                <Box component="form" onSubmit={handleSubmit}>
-                    {/* Category */}
-                    <TextField
-                        select
-                        label="Category"
-                        fullWidth
-                        margin="normal"
-                        value={categoryid ?? ""}
-                        onChange={(e) => {
-                            setCategoryid(Number(e.target.value));
-                            setProductid(null);
-                        }}
-                        size="small"
-                    >
-                        <MenuItem value="">Select Category</MenuItem>
-                        {categories.map((c: any) => (
-                            <MenuItem key={c.categoryid} value={c.categoryid}>
-                                {`${c.categoryName} - ${c.categoryPrefix}`}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-
-                    {/* Product */}
-                    <TextField
-                        select
-                        label="Product"
-                        fullWidth
-                        margin="normal"
-                        value={productid ?? ""}
-                        onChange={(e) => setProductid(Number(e.target.value))}
-                        disabled={!categoryid || products.length === 0}
-                        size="small"
-                    >
-                        {products.length ? (
-                            products.map((p: any) => (
-                                <MenuItem key={p.productid} value={p.productid}>
-                                    {p.productName} (Stock: {p.quantity}, SKU: {p.sku})
-                                </MenuItem>
-                            ))
-                        ) : (
-                            <MenuItem disabled>
-                                {categoryid ? "No products found" : "Select a category first"}
-                            </MenuItem>
-                        )}
-                    </TextField>
-
-                    {/* Stock Info */}
-                    {selectedProduct && (
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                                mt: 1,
-                                p: 1,
-                                border: "1px solid",
-                                borderColor: isLowStock ? "warning.main" : "info.main",
-                                borderRadius: 1,
-                                bgcolor: isLowStock ? "warning.light" : "info.light",
-                            }}
-                        >
-                            {isLowStock ? <Error color="warning" /> : <Info color="info" />}
-                            <Typography variant="body2">
-                                Stock: <strong>{selectedProduct.quantity}</strong> | Re-stock Level:{" "}
-                                <strong>{selectedProduct.restockLevel}</strong>
-                            </Typography>
-                        </Box>
-                    )}
-
-                    {/* Type */}
-                    <TextField
-                        select
-                        label="Transaction Type"
-                        fullWidth
-                        margin="normal"
-                        value={type}
-                        onChange={(e) => setType(e.target.value as "IN" | "OUT")}
-                        size="small"
-                    >
-                        <MenuItem value="IN">IN (Stock In)</MenuItem>
-                        <MenuItem value="OUT">OUT (Stock Out)</MenuItem>
-                    </TextField>
-
-                    {/* Quantity */}
-                    <TextField
-                        label="Quantity"
-                        fullWidth
-                        margin="normal"
-                        type="number"
-                        value={quantity}
-                        onChange={(e) => setQuantity(Number(e.target.value))}
-                        inputProps={{ min: 1 }}
-                        size="small"
-                    />
-
-                    {/* Note */}
-                    <TextField
-                        label="Note (Optional)"
-                        fullWidth
-                        margin="normal"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        size="small"
-                    />
-
-                    {/* Error */}
-                    {error && (
-                        <Alert severity="error" sx={{ mt: 2 }}>
-                            {error}
-                        </Alert>
-                    )}
-
-                    {/* Submit */}
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        fullWidth
-                        disabled={isLoading || error !== ""}
-                        sx={{ mt: 3, py: 1.5, fontWeight: "bold",background:"goldenrod" }}
-                    >
-                        {isLoading ? <CircularProgress size={22} /> : "Create Transaction"}
-                    </Button>
-                </Box>
-            </CardContent>
-        </Card>
+            <DynamicForm
+                fields={fields}
+                values={values}
+                setValues={setValues}
+                onSubmit={handleSubmit}
+                loading={isLoading}
+                extra={extra}
+            />
+        </FormWrapper>
     );
 };
 
