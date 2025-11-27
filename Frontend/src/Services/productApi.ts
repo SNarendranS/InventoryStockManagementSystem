@@ -29,7 +29,13 @@ export const productApi = createApi({
     getLowStockProducts: builder.query<GetProductsResponse, void>({
       query: () => "/product/stock/low"
     }),
+    deleteProduct: builder.mutation<void, { id: number }>({
+      query: ({ id }) => ({
+        url: `/product/${id}`,
+        method: "DELETE",
+      }),
+    })
   }),
 });
 
-export const { useGetProductsQuery, useCreateProductMutation, useGetProductsByCategoryQuery,useGetLowStockProductsQuery } = productApi;
+export const { useGetProductsQuery, useCreateProductMutation, useGetProductsByCategoryQuery, useGetLowStockProductsQuery ,useDeleteProductMutation} = productApi;

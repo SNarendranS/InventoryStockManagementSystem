@@ -52,20 +52,20 @@ const Header: React.FC = () => {
       case "admin":
         return [
           "Dashboard",
-          { Categories: ["View Categories", "Add Category", "Update Category", "Delete Category"] },
-          { Products: ["View Products", "Add Product", "Update Product", "Delete Product"] },
-          { Transactions: ["View Transactions", "Make Transaction", "Update Transaction", "Delete Transaction"] },
-          { "Your Team": ["View Employees", "Add Employee", "Edit Employee", "Delete Employee"] },
+          { Categories: ["View Categories", "Add Category"] },
+          { Products: ["View Products", "Add Product"] },
+          { Transactions: ["View Transactions", "Make Transaction"] },
+          { "Your Team": ["View Employees", "Add Employee"] },
 
           "Reports"
         ];
       case "manager":
         return [
           "Dashboard",
-          { Categories: ["View Categories", "Add Category", "Update Category"] },
-          { Products: ["View Products", "Add Product", "Update Product"] },
-          { Transactions: ["View Transactions", "Make Transaction", "Update Transaction"] },
-          { "Your Team": ["View Employees"] },
+          { Categories: ["View Categories", "Add Category"] },
+          { Products: ["View Products", "Add Product"] },
+          { Transactions: ["View Transactions", "Make Transaction"] },
+          "View Employees",
           "Reports"
         ];
       case "employee":
@@ -227,7 +227,7 @@ const Header: React.FC = () => {
 
             <Tooltip title="Account Settings">
               <Avatar
-                sx={{ width: 38, height: 38, cursor: "pointer" }}
+                sx={{ width: 38, height: 38, cursor: "pointer", border: `3px solid ${user.role=="admin"?"green":user.role=="manager"?"orange":"red"}` }}
                 onClick={handleAvatarClick}
                 src="https://i.pravatar.cc/80"
               />

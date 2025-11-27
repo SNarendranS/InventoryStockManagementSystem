@@ -21,6 +21,7 @@ export interface Column<T> {
   key: keyof T | string;
   label: string;
   render?: (row: T) => React.ReactNode;
+  icon?: (row: T) => React.ReactNode;
 }
 
 interface DataTableProps<T> {
@@ -150,7 +151,7 @@ function DataTable<T extends Record<string, any>>({
                   >
                     {columns.map((col) => (
                       <TableCell key={String(col.key)}>
-                        {col.render ? col.render(row) : row[col.key]}
+                        {col.icon ? col.icon(row) : (col.render ? col.render(row) : row[col.key])}
                       </TableCell>
                     ))}
                   </TableRow>
