@@ -3,7 +3,7 @@ export interface Category {
     categoryName: string;
     categoryPrefix:string;
     categoryDescription: string;
-
+    productCount?:number;
 }
 
 export interface GetCategoryResponse {

@@ -4,9 +4,11 @@ import { Box } from "@mui/material";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import Products from "../Pages/Products/Products";
 import Transactions from "../Pages/Transaction/Transactions";
-import Categories from "../Pages/Categories";
+import Categories from "../Pages/Category/Categories";
 import AddTransaction from "../Pages/Transaction/AddTransaction";
 import AddProduct from "../Pages/Products/AddProduct";
+import AddCategory from "../Pages/Category/AddCategory";
+import Users from "../Pages/Users/Users";
 
 const Reports = () => <h1>Reports</h1>;
 
@@ -53,6 +55,12 @@ const Body: React.FC = () => {
                     }
                 />
                 <Route
+                    path="/view-employees"
+                    element={
+                        <Users />
+                    }
+                />
+                <Route
                     path="/make-transaction"
                     element={
                         <AddTransaction />
@@ -62,6 +70,12 @@ const Body: React.FC = () => {
                     path="/add-product"
                     element={
                         <AddProduct />
+                    }
+                />
+                <Route
+                    path="/add-category"
+                    element={
+                        <AddCategory />
                     }
                 />
                 <Route

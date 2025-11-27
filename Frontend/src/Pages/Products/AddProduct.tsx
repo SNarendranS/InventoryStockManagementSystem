@@ -4,6 +4,7 @@ import DynamicForm from "../../Components/DynamicForm//DynamicForm";
 import { useGetCategoriesQuery } from "../../Services/categoryApi";
 import { useCreateProductMutation } from "../../Services/productApi";
 import { Alert, Box, TextField } from "@mui/material";
+import type { ErrorResponse } from "react-router-dom";
 
 const AddProduct: React.FC = () => {
     const { data } = useGetCategoriesQuery();
@@ -84,7 +85,7 @@ const AddProduct: React.FC = () => {
 
             setError("");
         } catch(e) {
-            setError(e?.data?.message);
+            setError((e as ErrorResponse)?.data?.message);
         }
 
     };

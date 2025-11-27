@@ -26,7 +26,7 @@ Category.init(
             type: DataTypes.STRING(4),
             allowNull: false,
             validate: {
-                length: [3, 4]
+                len: [3, 4]
             }
         },
         categoryDescription: {
