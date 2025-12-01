@@ -6,11 +6,12 @@ import { useGetProductsByCategoryQuery } from "../../Services/productApi";
 import { useCreateTransactionMutation } from "../../Services/transactionApi";
 import { Box, Typography, Alert } from "@mui/material";
 import { Info, Error as ErrorIcon } from "@mui/icons-material";
+import { TransactionType } from "../../Interfaces/ITransaction";
 
 interface TransactionInput {
     categoryid: number;
     productid: number;
-    type: "IN" | "OUT";
+    type: TransactionType;
     quantity: number;
     note: string;
 }
@@ -25,7 +26,7 @@ const AddTransaction: React.FC = () => {
     const [values, setValues] = useState<TransactionInput>({
         categoryid: 0,
         productid: 0,
-        type: "IN",
+        type: TransactionType.IN,
         quantity: 1,
         note: ""
     });
@@ -47,12 +48,12 @@ const AddTransaction: React.FC = () => {
     // Low stock warning
     const isLowStock =
         selectedProduct &&
-        values.type === "OUT" &&
+        values.type === TransactionType.OUT &&
         selectedProduct.quantity <= selectedProduct.restockLevel;
 
     // Validation when quantity/type changes
     useEffect(() => {
-        if (values.type === "OUT" && selectedProduct) {
+        if (values.type === TransactionType.OUT && selectedProduct) {
             if (values.quantity > selectedProduct.quantity) {
                 setError(`Only ${selectedProduct.quantity} in stock`);
             } else {
@@ -147,7 +148,7 @@ const AddTransaction: React.FC = () => {
             setValues({
                 categoryid: 0,
                 productid: 0,
-                type: "IN",
+                type:TransactionType.IN,
                 quantity: 1,
                 note: ""
             });

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../models/User";
+import { UserRole } from "../enums/EuserRoles";
 
 export const getAllUsers = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,7 +20,25 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
     next(error as Error)
   }
 };
+export const getAllManagers = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { count, rows: users } = await User.findAndCountAll({
+      attributes: ["userid", "name", "email", "role", "managerid", "createdAt"],
+      include: [{ model: User, as: "manager", attributes: ["name", "email", "role"] }],
+      order: [["createdAt", "DESC"]],
+      where:{role:[UserRole.ADMIN,UserRole.MANAGER]}
+    });
+    res.status(200).json({
+      count,
+      users
+    }
+    );
 
+  } catch (error: unknown) {
+    console.log(error)
+    next(error as Error)
+  }
+};
 export const getEmployeesByManager = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { managerid } = req.params

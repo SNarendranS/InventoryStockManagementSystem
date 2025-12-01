@@ -41,7 +41,6 @@ const Products: React.FC = () => {
     if (error) return <Typography color="error">Failed to load products</Typography>;
 
     const columns = [
-        { key: "productid", label: "ID" },
         { key: "sku", label: "SKU" },
         { key: "productName", label: "Name" },
         { key: "price", label: "Price", render: (row: Product) => `₹${row.price}` },
@@ -91,6 +90,7 @@ const Products: React.FC = () => {
             />
 
             <DeletePopup
+                popupName="Product"
                 open={openDelete}
                 onClose={() => setOpenDelete(false)}
                 deleteCallback={confirmDelete}

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../Store/store";
-import type { GetDemandSalesResponse, GetTransactionsResponse } from "../Interfaces/ITransaction";
+import type { GetDemandSalesResponse, GetTransactionsResponse, TransactionType } from "../Interfaces/ITransaction";
 
 export const transactionApi = createApi({
   reducerPath: "transactionApi",
@@ -19,7 +19,7 @@ export const transactionApi = createApi({
       providesTags: ["Transactions"],       // ⭐ Mark data source
     }),
 
-    createTransaction: builder.mutation<any, { productid: number; type: "IN" | "OUT"; quantity: number; note?: string }>({
+    createTransaction: builder.mutation<any, { productid: number; type: TransactionType; quantity: number; note?: string }>({
       query: (body) => ({
         url: "/transaction",
         method: "POST",

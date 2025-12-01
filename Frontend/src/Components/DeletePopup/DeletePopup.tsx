@@ -10,12 +10,13 @@ import {
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 type Props = {
+    popupName?:string
     open: boolean;
     onClose: () => void;
     deleteCallback: () => void;
 };
 
-const DeletePopup = ({ open, onClose, deleteCallback }: Props) => {
+const DeletePopup = ({ open, onClose, deleteCallback,popupName }: Props) => {
     return (
         <Dialog
             open={open}
@@ -40,7 +41,7 @@ const DeletePopup = ({ open, onClose, deleteCallback }: Props) => {
 
             <DialogContent>
                 <Typography variant="body1" sx={{ mt: 1 }}>
-                    Are you sure you want to delete this item?  
+                    Are you sure you want to delete this {popupName || "item"}?  
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                     This action cannot be undone.

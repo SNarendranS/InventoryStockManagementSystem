@@ -55,7 +55,7 @@ const Header: React.FC = () => {
           { Categories: ["View Categories", "Add Category"] },
           { Products: ["View Products", "Add Product"] },
           { Transactions: ["View Transactions", "Make Transaction"] },
-          { "Your Team": ["View Employees", "Add Employee"] },
+          { "Employees": ["View Employees", "Add Employee"] },
 
           "Reports"
         ];
@@ -65,7 +65,7 @@ const Header: React.FC = () => {
           { Categories: ["View Categories", "Add Category"] },
           { Products: ["View Products", "Add Product"] },
           { Transactions: ["View Transactions", "Make Transaction"] },
-          "View Employees",
+          "Your Team",
           "Reports"
         ];
       case "employee":
@@ -121,16 +121,22 @@ const Header: React.FC = () => {
         >
           {/* LEFT SIDE */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Inventory sx={{ color: "goldenrod" }} />
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                letterSpacing: 0.5,
-              }}
-            >
-              Inventory Manager
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, "&:hover": { cursor: "pointer" }, }}
+              onClick={() => {
+                navigate("/dashboard")
+              }}>
+
+              <Inventory sx={{ color: "goldenrod" }} />
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  letterSpacing: 0.5,
+                }}
+              >
+                Inventory Manager
+              </Typography>
+            </Box>
 
             {/* Desktop Navigation */}
             {!isMobile && (
@@ -227,7 +233,7 @@ const Header: React.FC = () => {
 
             <Tooltip title="Account Settings">
               <Avatar
-                sx={{ width: 38, height: 38, cursor: "pointer", border: `3px solid ${user.role=="admin"?"green":user.role=="manager"?"orange":"red"}` }}
+                sx={{ width: 38, height: 38, cursor: "pointer", border: `3px solid ${user.role == "admin" ? "green" : user.role == "manager" ? "orange" : "red"}` }}
                 onClick={handleAvatarClick}
                 src="https://i.pravatar.cc/80"
               />

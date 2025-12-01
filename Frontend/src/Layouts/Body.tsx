@@ -9,6 +9,7 @@ import AddTransaction from "../Pages/Transaction/AddTransaction";
 import AddProduct from "../Pages/Products/AddProduct";
 import AddCategory from "../Pages/Category/AddCategory";
 import Users from "../Pages/Users/Users";
+import AddUser from "../Pages/Users/AddUser";
 
 const Reports = () => <h1>Reports</h1>;
 
@@ -76,6 +77,12 @@ const Body: React.FC = () => {
                     path="/add-category"
                     element={
                         <AddCategory />
+                    }
+                />
+                <Route
+                    path="/add-employee"
+                    element={
+                        <AddUser />
                     }
                 />
                 <Route

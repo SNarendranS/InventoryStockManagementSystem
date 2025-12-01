@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../Store/store";
-import type { GetUserResponse, User, CreateUserPayload } from "../Interfaces/IUser";
+import type { GetUserResponse, User } from "../Interfaces/IUser";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -19,7 +19,10 @@ export const userApi = createApi({
     getUsers: builder.query<GetUserResponse, void>({
       query: () => "/user",
     }),
-
+    //get all managers
+    getManagers: builder.query<GetUserResponse, void>({
+      query: () => "/user/manager",
+    }),
     // GET user by manager ID
     getUsersByManager: builder.query<GetUserResponse, number>({
       query: (managerid) => `/user/manager/${managerid}`,
@@ -30,21 +33,19 @@ export const userApi = createApi({
     getUserById: builder.query<User, number>({
       query: (id) => `/user/${id}`,
     }),
-
-    // CREATE a new user
-    createUser: builder.mutation<User, CreateUserPayload>({
-      query: (body) => ({
-        url: "/user",
-        method: "POST",
-        body,
+    deleteUser: builder.mutation<void, { id: number }>({
+      query: ({ id }) => ({
+        url: `/user/${id}`,
+        method: "DELETE",
       }),
-    }),
+    })
   }),
 });
 
 export const {
   useGetUsersQuery,
+  useGetManagersQuery,
   useGetUsersByManagerQuery,
   useGetUserByIdQuery,
-  useCreateUserMutation,
+  useDeleteUserMutation
 } = userApi;
