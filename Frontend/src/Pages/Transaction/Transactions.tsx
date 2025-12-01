@@ -30,7 +30,6 @@ const Transactions: React.FC = () => {
     };
 
     const confirmDelete = () => {
-        console.log("hello") //not printing
         if (selectedTransaction) {
             deleteTransaction({ id: selectedTransaction.transactionid });
             setOpenDelete(false);
@@ -136,6 +135,7 @@ const Transactions: React.FC = () => {
             />
 
             <DeletePopup
+                popupName="Transaction"
                 open={openDelete}
                 onClose={() => setOpenDelete(false)}
                 deleteCallback={confirmDelete}

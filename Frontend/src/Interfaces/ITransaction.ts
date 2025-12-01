@@ -1,15 +1,22 @@
-// types.ts or apiTypes.ts
+export const TransactionType = {
+  DEFAULT:"",
+  IN: "IN",
+  OUT: "OUT",
+} as const;
+
+export type TransactionType = typeof TransactionType[keyof typeof TransactionType];
+
 export interface TransactionProduct {
   productName: string;
   sku: string;
-  price: string; // backend returns string
+  price: string; 
   quantity: number;
 }
 
 export interface Transaction {
   transactionid: number;
   productid: number;
-  type: "IN" | "OUT";
+  type:TransactionType;
   quantity: number;
   note?: string;
   createdAt: string;
