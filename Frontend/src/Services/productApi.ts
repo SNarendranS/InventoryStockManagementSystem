@@ -12,42 +12,54 @@ export const productApi = createApi({
       return headers;
     },
   }),
+
+  tagTypes: ["Products", "Categories"],
+
   endpoints: (builder) => ({
+
     getProducts: builder.query<GetProductsResponse, void>({
       query: () => "/product",
+      providesTags: ["Products"],
     }),
+
     getProductsByCategory: builder.query<GetProductsResponse, { categoryid: number }>({
       query: ({ categoryid }) => `/product/category/${categoryid}`,
+      providesTags: ["Products"],
     }),
-    createProduct: builder.mutation<Product, Partial<Product>>({
+
+    createProduct: builder.mutation({
       query: (body) => ({
         url: "/product",
         method: "POST",
         body,
       }),
-    }),
-    getLowStockProducts: builder.query<GetProductsResponse, void>({
-      query: () => "/product/stock/low"
-    }),
-    editProduct: builder.mutation<
-      any,
-      { id: number; body: Partial<Product> }
-    >({
-      query: ({ id, body }) => ({
-        url: `/product/${id}`, // assuming you want to edit a product, not transaction
-        method: "PUT",          // PUT is standard for updates
-        body,
-      }),
-      // invalidatesTags: ["Products"], // invalidate relevant cache
+      invalidatesTags: ["Products"],
     }),
 
-    deleteProduct: builder.mutation<void, { id: number }>({
+    getLowStockProducts: builder.query({
+      query: () => "/product/stock/low",
+      providesTags: ["Products"],
+    }),
+
+    editProduct: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/product/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
+    deleteProduct: builder.mutation({
       query: ({ id }) => ({
         url: `/product/${id}`,
         method: "DELETE",
       }),
-    })
+      invalidatesTags: ["Products"],
+    }),
+
   }),
 });
+
 
 export const { useGetProductsQuery, useCreateProductMutation, useGetProductsByCategoryQuery, useGetLowStockProductsQuery,useEditProductMutation, useDeleteProductMutation } = productApi;
