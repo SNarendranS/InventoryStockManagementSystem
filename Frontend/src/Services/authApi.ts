@@ -13,6 +13,7 @@ export const authApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Auth"],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (body) => ({
@@ -20,14 +21,16 @@ export const authApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Auth"],
     }),
-        registerUser: builder.mutation<User, CreateUserPayload>({
-          query: (body) => ({
-            url: "/auth/register",
-            method: "POST",
-            body,
-          }),
-        }),
+    registerUser: builder.mutation<User, CreateUserPayload>({
+      query: (body) => ({
+        url: "/auth/register",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
   }),
 });
 

@@ -16,7 +16,7 @@ export const transactionApi = createApi({
   endpoints: (builder) => ({
     getTransactions: builder.query<GetTransactionsResponse, void>({
       query: () => "/transaction",
-      providesTags: ["Transactions"],       // ⭐ Mark data source
+      providesTags: ["Transactions"],
     }),
     createTransaction: builder.mutation<any, { productid: number; type: TransactionType; quantity: number; note?: string }>({
       query: (body) => ({
@@ -27,7 +27,9 @@ export const transactionApi = createApi({
       invalidatesTags: ["Transactions", "Products"],
     }),
     getRecentTransactionByType: builder.query<GetTransactionsResponse, { type: string; limit: number }>({
-      query: ({ type, limit }) => `/transaction/recent/desc?type=${type}&limit=${limit}`,
+      query: ({ type, limit }) =>
+        `/transaction/recent/desc?type=${type}&limit=${limit}`,
+      providesTags: ["Transactions"],
     }),
     getDemandSalesTransactions: builder.query<GetDemandSalesResponse, void>({
       query: () => `/transaction/demand/sales`,
@@ -42,12 +44,10 @@ export const transactionApi = createApi({
           sku: t.product.sku,
           price: t.product.price,
         }))
-      })
+      }),
+      providesTags: ["Transactions"],
     }),
-    editTransaction: builder.mutation<
-      any,
-      { id: number; body: { type?: TransactionType; quantity?: number; note?: string } }
-    >({
+    editTransaction: builder.mutation<any, { id: number; body: { type?: TransactionType; quantity?: number; note?: string } }>({
       query: ({ id, body }) => ({
         url: `/transaction/${id}`,
         method: "PUT",
@@ -61,10 +61,9 @@ export const transactionApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["Transactions"],
-
-    })
-  })
-})
+    }),
+  }),
+});
 
 export const {
   useGetTransactionsQuery,
