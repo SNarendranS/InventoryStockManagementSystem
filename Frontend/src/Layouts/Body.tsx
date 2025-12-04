@@ -11,8 +11,7 @@ import AddCategory from "../Pages/Category/AddCategory";
 import Users from "../Pages/Users/Users";
 import AddUser from "../Pages/Users/AddUser";
 import Profile from "../Pages/Profile";
-
-const Reports = () => <h1>Reports</h1>;
+import ReportsPage from "../Pages/ReportsPage";
 
 const Body: React.FC = () => {
     const { pathname } = useLocation();
@@ -95,9 +94,10 @@ const Body: React.FC = () => {
                 <Route
                     path="/reports"
                     element={
-                        <Reports />
+                        <ReportsPage />
                     }
                 />
+                         
             </Routes>
 
         </Box>

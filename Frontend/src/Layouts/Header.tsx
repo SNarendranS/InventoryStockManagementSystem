@@ -19,11 +19,12 @@ import {
   useMediaQuery,
   Tooltip,
   Fade,
+  Collapse,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { Inventory } from "@mui/icons-material";
+import { ExpandLess, ExpandMore, Inventory } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -83,7 +84,12 @@ const Header: React.FC = () => {
   const handleNavigate = (path: string) => {
     navigate("/" + path.toLowerCase().replaceAll(" ", "-"));
   };
+  const [openMenus, setOpenMenus] = React.useState<{ [key: string]: boolean }>({});
 
+  // Toggle submenus
+  const handleToggleMenu = (title: string) => {
+    setOpenMenus((prev) => ({ ...prev, [title]: !prev[title] }));
+  };
   // Avatar Menu
   const handleAvatarClick = (e: any) => setAvatarMenuAnchor(e.currentTarget);
   const closeAvatarMenu = () => setAvatarMenuAnchor(null);
@@ -259,6 +265,7 @@ const Header: React.FC = () => {
       </AppBar>
 
       {/* MOBILE DRAWER */}
+
       <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <Box sx={{ width: 260 }}>
           <Typography
@@ -284,35 +291,42 @@ const Header: React.FC = () => {
                 );
               }
 
+              // Dropdown menu
               const title = Object.keys(item)[0];
               const subItems = Object.values(item)[0];
 
               return (
                 <React.Fragment key={index}>
                   <ListItem disablePadding>
-                    <ListItemButton>
+                    <ListItemButton onClick={() => handleToggleMenu(title)}>
                       <ListItemText primary={title} />
+                      {openMenus[title] ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                   </ListItem>
 
-                  {subItems.map((sub: string, i: number) => (
-                    <ListItem key={i} disablePadding sx={{ pl: 4 }}>
-                      <ListItemButton
-                        onClick={() => {
-                          handleNavigate(sub);
-                          setDrawerOpen(false);
-                        }}
-                      >
-                        <ListItemText primary={sub} />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
+                  <Collapse in={openMenus[title]} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {subItems.map((sub: string, i: number) => (
+                        <ListItem key={i} disablePadding sx={{ pl: 4 }}>
+                          <ListItemButton
+                            onClick={() => {
+                              handleNavigate(sub);
+                              setDrawerOpen(false);
+                            }}
+                          >
+                            <ListItemText primary={sub} />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
                 </React.Fragment>
               );
             })}
           </List>
         </Box>
       </Drawer>
+
     </>
   );
 };
