@@ -247,9 +247,9 @@ const Header: React.FC = () => {
             onClose={closeAvatarMenu}
             PaperProps={{ sx: { borderRadius: "12px", mt: 1 } }}
           >
-            <MenuItem onClick={closeAvatarMenu}>My Profile</MenuItem>
-            <MenuItem onClick={closeAvatarMenu}>Notifications</MenuItem>
-            <MenuItem onClick={closeAvatarMenu}>Settings</MenuItem>
+            <MenuItem onClick={() => { handleNavigate("profile");; closeAvatarMenu(); }}>My Profile</MenuItem>
+            <MenuItem onClick={() => { handleNavigate("profile");; closeAvatarMenu(); }}>Notifications</MenuItem>
+            <MenuItem onClick={() => { handleNavigate("profile");; closeAvatarMenu(); }}>Settings</MenuItem>
             <Divider />
             <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
               Logout

@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { CircularProgress, IconButton, Typography } from "@mui/material";
 import { useDeleteProductMutation, useGetProductsQuery } from "../../Services/productApi";
+import { useGetCategoriesQuery } from "../../Services/categoryApi";
 import type { Product } from "../../Interfaces/IProduct";
 import DataTable from "../../Components/DataTable";
 import { Delete, Edit } from "@mui/icons-material";
-import EditPopup from "../../Components/EditPopup/EditPopup";
+import EditPopup, { type FieldConfig } from "../../Components/EditPopup/EditPopup";
 import DeletePopup from "../../Components/DeletePopup/DeletePopup";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../Store/store";
 
 const Products: React.FC = () => {
     const { data, error, isLoading } = useGetProductsQuery();
+    const { data: categories } = useGetCategoriesQuery();
     const user = useSelector((state: RootState) => state.userToken.user);
 
-    // All hooks must be at the top (Rules of Hooks)
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -59,7 +60,6 @@ const Products: React.FC = () => {
             }]
             : []),
 
-        // ⭐ Show DELETE only for admin
         ...(user.role === "admin"
             ? [{
                 key: "delete",
@@ -73,6 +73,22 @@ const Products: React.FC = () => {
             : []),
     ];
 
+    // 🔹 Fields for EditPopup
+    const productFields: FieldConfig[] = [
+        { name: "sku", label: "SKU", type: "text" },
+        { name: "productName", label: "Name", type: "text" },
+        { name: "price", label: "Price", type: "number" },
+        { name: "quantity", label: "Stock Qty", type: "number" },
+        {
+            name: "category",
+            label: "Category",
+            type: "select",
+            options: categories?.categories.map(c => ({
+                label: c.categoryName,
+                value: c.categoryid
+            }))
+        },
+    ];
 
     return (
         <>
@@ -84,9 +100,15 @@ const Products: React.FC = () => {
             />
 
             <EditPopup
+                popupName="Product"
                 open={openEdit}
                 onClose={() => setOpenEdit(false)}
-            //product={selectedProduct}
+                fields={productFields}
+                initialData={selectedProduct}
+                onSubmit={(values) => {
+                    console.log("Updated product:", values);
+                    // Call your update API here
+                }}
             />
 
             <DeletePopup

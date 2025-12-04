@@ -1,40 +1,49 @@
 import React, { useState } from "react";
 import { CircularProgress, IconButton, Typography } from "@mui/material";
-import { useDeleteUserMutation, useGetUsersByManagerQuery, useGetUsersQuery } from "../../Services/userApi";
-import DataTable from "../../Components/DataTable";
+import { useDeleteUserMutation, useGetUsersQuery, useGetUsersByManagerQuery, useGetManagersQuery } from "../../Services/userApi";
 import type { User } from "../../Interfaces/IUser";
+import DataTable from "../../Components/DataTable";
+import EditPopup, { type FieldConfig } from "../../Components/EditPopup/EditPopup";
+import DeletePopup from "../../Components/DeletePopup/DeletePopup";
+import { Delete, Edit } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../Store/store";
-import { Delete, Edit } from "@mui/icons-material";
-import EditPopup from "../../Components/EditPopup/EditPopup";
-import DeletePopup from "../../Components/DeletePopup/DeletePopup";
+import { useNavigate } from "react-router-dom";
 
 const Users: React.FC = () => {
     const user = useSelector((state: RootState) => state.userToken.user);
-
-    const { data, error, isLoading } = user.role == "admin" ? useGetUsersQuery() : useGetUsersByManagerQuery(user.userid)
-
+    const { data, error, isLoading } = user.role === "admin"
+        ? useGetUsersQuery()
+        : useGetUsersByManagerQuery(user.userid);
+    const { data: managersRes } = useGetManagersQuery();
+    const managers = managersRes?.users || [];
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const [deleteUser] = useDeleteUserMutation();
+    const navigate = useNavigate();
 
-    const handleDelete = (user: User) => {
-        setSelectedUser(user);
+    const handleEdit = (u: User) => {
+        if (user.userid === u.userid) navigate("/profile");
+        else {
+            setSelectedUser(u);
+            setOpenEdit(true);
+        }
+    };
+
+    const handleDelete = (u: User) => {
+        setSelectedUser(u);
         setOpenDelete(true);
     };
 
-    const handleEdit = (user: User) => {
-        setSelectedUser(user);
-        setOpenEdit(true);
-    };
     const confirmDelete = () => {
         if (selectedUser) {
             deleteUser({ id: selectedUser.userid });
             setOpenDelete(false);
         }
     };
+
     if (isLoading) return <CircularProgress />;
     if (error) return <Typography color="error">Failed to load Employees</Typography>;
 
@@ -46,34 +55,68 @@ const Users: React.FC = () => {
         { key: "manager.name", label: "Manager", render: (row: User) => row.manager?.name || "-" },
         { key: "manager.email", label: "Manager Email", render: (row: User) => row.manager?.email || "-" },
         { key: "createdAt", label: "Joining Date", render: (row: User) => new Date(row.createdAt).toLocaleDateString() },
-        ...(user.role === "admin" ? [{
-            key: "edit",
-            label: "Edit",
-            icon: (row: User) => (
-                <IconButton onClick={() => handleEdit(row)}>
-                    <Edit sx={{ color: "#8592afff" }} />
-                </IconButton>
-            )
-        }, {
-            key: "delete",
-            label: "Delete",
-            icon: (row: User) => (
-                <IconButton onClick={() => handleDelete(row)}>
-                    <Delete sx={{ color: "#c9371dff" }} />
-                </IconButton>
-            )
-        }]
-            : []),
+        ...(user.role === "admin" ? [
+            {
+                key: "edit",
+                label: "Edit",
+                icon: (row: User) => (
+                    <IconButton onClick={() => handleEdit(row)}>
+                        <Edit sx={{ color: "#8592afff" }} />
+                    </IconButton>
+                )
+            },
+            {
+                key: "delete",
+                label: "Delete",
+                icon: (row: User) => (
+                    user.userid !== row.userid ? (
+                        <IconButton onClick={() => handleDelete(row)}>
+                            <Delete sx={{ color: "#c9371dff" }} />
+                        </IconButton>
+                    ) : null
+                )
+            }
+        ] : [])
+    ];
 
+    // Dynamic fields for EditPopup
+    const userFields: FieldConfig[] = [
+        { name: "name", label: "Name", type: "text" },
+        { name: "email", label: "Email", type: "text" },
+        {
+            name: "manager", label: "Manager", type: "select", options: managers?.map(m => ({
+                label: m.name,
+                value: m.userid
+            }))
+
+        },
+        {
+            name: "role", label: "Role", type: "select", options: [
+                { label: "Admin", value: "admin" },
+                { label: "Manager", value: "manager" },
+                { label: "Employee", value: "employee" }
+            ]
+        },
     ];
 
     return (
         <>
-            <DataTable columns={columns} count={data?.count || 0} rows={data?.users || []} title="Employees" />;
+            <DataTable
+                columns={columns}
+                count={data?.count || 0}
+                rows={data?.users || []}
+                title="Employees"
+            />
+
             <EditPopup
+                popupName="Employee"
                 open={openEdit}
                 onClose={() => setOpenEdit(false)}
-            // transaction={selectedTransaction}
+                fields={userFields}
+                initialData={selectedUser}
+                onSubmit={(values) => {
+                    console.log("Updated user:", values);
+                }}
             />
 
             <DeletePopup
@@ -83,8 +126,7 @@ const Users: React.FC = () => {
                 deleteCallback={confirmDelete}
             />
         </>
-    )
-
+    );
 };
 
 export default Users;
