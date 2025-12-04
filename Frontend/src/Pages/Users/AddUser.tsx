@@ -9,7 +9,7 @@ import '../../Utils/StringFunctions';
 
 const AddUser: React.FC = () => {
 
-    // Fetch Categories
+    // Fetch managers
     const { data: managersRes, isLoading: loadingManagers } = useGetManagersQuery();
     const managers = managersRes?.users || [];
 

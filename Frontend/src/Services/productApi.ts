@@ -29,6 +29,18 @@ export const productApi = createApi({
     getLowStockProducts: builder.query<GetProductsResponse, void>({
       query: () => "/product/stock/low"
     }),
+    editProduct: builder.mutation<
+      any,
+      { id: number; body: Partial<Product> }
+    >({
+      query: ({ id, body }) => ({
+        url: `/product/${id}`, // assuming you want to edit a product, not transaction
+        method: "PUT",          // PUT is standard for updates
+        body,
+      }),
+      // invalidatesTags: ["Products"], // invalidate relevant cache
+    }),
+
     deleteProduct: builder.mutation<void, { id: number }>({
       query: ({ id }) => ({
         url: `/product/${id}`,
@@ -38,4 +50,4 @@ export const productApi = createApi({
   }),
 });
 
-export const { useGetProductsQuery, useCreateProductMutation, useGetProductsByCategoryQuery, useGetLowStockProductsQuery ,useDeleteProductMutation} = productApi;
+export const { useGetProductsQuery, useCreateProductMutation, useGetProductsByCategoryQuery, useGetLowStockProductsQuery,useEditProductMutation, useDeleteProductMutation } = productApi;

@@ -10,6 +10,7 @@ import AddProduct from "../Pages/Products/AddProduct";
 import AddCategory from "../Pages/Category/AddCategory";
 import Users from "../Pages/Users/Users";
 import AddUser from "../Pages/Users/AddUser";
+import Profile from "../Pages/Profile";
 
 const Reports = () => <h1>Reports</h1>;
 
@@ -35,6 +36,12 @@ const Body: React.FC = () => {
                     path="/dashboard"
                     element={
                         <Dashboard />
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <Profile />
                     }
                 />
                 <Route

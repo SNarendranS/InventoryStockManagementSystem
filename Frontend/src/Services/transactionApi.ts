@@ -18,7 +18,6 @@ export const transactionApi = createApi({
       query: () => "/transaction",
       providesTags: ["Transactions"],       // ⭐ Mark data source
     }),
-
     createTransaction: builder.mutation<any, { productid: number; type: TransactionType; quantity: number; note?: string }>({
       query: (body) => ({
         url: "/transaction",
@@ -45,6 +44,17 @@ export const transactionApi = createApi({
         }))
       })
     }),
+    editTransaction: builder.mutation<
+      any,
+      { id: number; body: { type?: TransactionType; quantity?: number; note?: string } }
+    >({
+      query: ({ id, body }) => ({
+        url: `/transaction/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Transactions", "Products"],
+    }),
     deleteTransaction: builder.mutation<void, { id: number }>({
       query: ({ id }) => ({
         url: `/transaction/${id}`,
@@ -61,5 +71,6 @@ export const {
   useCreateTransactionMutation,
   useGetDemandSalesTransactionsQuery,
   useGetRecentTransactionByTypeQuery,
+  useEditTransactionMutation,
   useDeleteTransactionMutation
 } = transactionApi;

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { CircularProgress, IconButton, Typography } from "@mui/material";
-import { useDeleteTransactionMutation, useGetTransactionsQuery } from "../../Services/transactionApi";
-import type { Transaction } from "../../Interfaces/ITransaction";
+import { useDeleteTransactionMutation, useGetTransactionsQuery, useEditTransactionMutation } from "../../Services/transactionApi";
+import type { Transaction, TransactionType } from "../../Interfaces/ITransaction";
 import DataTable from "../../Components/DataTable";
-import EditPopup from "../../Components/EditPopup/EditPopup";
+import EditPopup, { type FieldConfig } from "../../Components/EditPopup/EditPopup";
 import DeletePopup from "../../Components/DeletePopup/DeletePopup";
 import { Delete, Edit } from "@mui/icons-material";
-import type { RootState } from "../../Store/store";
 import { useSelector } from "react-redux";
+import type { RootState } from "../../Store/store";
 
 const Transactions: React.FC = () => {
     const { data, error, isLoading } = useGetTransactionsQuery();
@@ -18,15 +18,21 @@ const Transactions: React.FC = () => {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
     const [deleteTransaction] = useDeleteTransactionMutation();
-
-    const handleDelete = (transaction: Transaction) => {
-        setSelectedTransaction(transaction);
-        setOpenDelete(true);
-    };
+    const [editTransaction] = useEditTransactionMutation();
 
     const handleEdit = (transaction: Transaction) => {
         setSelectedTransaction(transaction);
         setOpenEdit(true);
+    };
+    const confirmEdit = (values: { type?: TransactionType; quantity?: number; note?: string }) => {
+        if (selectedTransaction) {
+            editTransaction({ id: selectedTransaction.transactionid, body: { ...values } });
+            setOpenEdit(false);
+        }
+    };
+    const handleDelete = (transaction: Transaction) => {
+        setSelectedTransaction(transaction);
+        setOpenDelete(true);
     };
 
     const confirmDelete = () => {
@@ -43,59 +49,12 @@ const Transactions: React.FC = () => {
         { key: "transactionid", label: "ID" },
         { key: "product", label: "Product", render: (row: Transaction) => row.product.productName },
         { key: "sku", label: "SKU", render: (row: Transaction) => row.product.sku },
-        {
-            key: "type", label: "Type",
-            render: (row: Transaction) => (
-                <Typography
-                    sx={{
-
-                        color: row.type === "IN" ? "#256029" : "#B71C1C",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        fontWeight: 600,
-                        fontSize: "14px",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
-                        height: 34,
-                        width: 34,
-                        borderRadius: "50%",
-                        backgroundColor: row.type === "IN" ? "#C8E6C9" : "#FFCDD2",
-                    }}
-                >
-                    {row.type}
-                </Typography>
-            )
-        },
-        {
-            key: "quantity",
-            label: "Quantity",
-            render: (row: Transaction) => (
-                <Typography
-                    sx={{
-                        color: row.type === "IN" ? "#256029" : "#B71C1C",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        fontWeight: 600,
-                    }}
-                >
-                    {row.type === "IN" ? "+" : "-"}
-                    {row.quantity}
-                </Typography>
-            )
-        },
+        { key: "type", label: "Type", render: (row: Transaction) => row.type },
+        { key: "quantity", label: "Quantity", render: (row: Transaction) => row.quantity },
         { key: "price", label: "Price", render: (row: Transaction) => `₹${row.product.price}` },
         { key: "note", label: "Note", render: (row: Transaction) => row.note || "-" },
-        {
-            key: "date",
-            label: "Date",
-            render: (row: Transaction) => new Date(row.createdAt).toLocaleDateString(),
-        },
-        {
-            key: "time",
-            label: "Time",
-            render: (row: Transaction) => new Date(row.createdAt).toLocaleTimeString(),
-        },
+        { key: "date", label: "Date", render: (row: Transaction) => new Date(row.createdAt).toLocaleDateString() },
+        { key: "time", label: "Time", render: (row: Transaction) => new Date(row.createdAt).toLocaleTimeString() },
         {
             key: "edit",
             label: "Edit",
@@ -104,8 +63,7 @@ const Transactions: React.FC = () => {
                     <Edit sx={{ color: "#8592afff" }} />
                 </IconButton>
             )
-        }
-        ,
+        },
         ...(user.role !== "employee"
             ? [{
                 key: "delete",
@@ -116,7 +74,14 @@ const Transactions: React.FC = () => {
                     </IconButton>
                 )
             }]
-            : []),
+            : [])
+    ];
+
+    // Dynamic fields for editing transactions
+    const transactionFields: FieldConfig[] = [
+        { name: "type", label: "Type", type: "select", options: [{ label: "IN", value: "IN" }, { label: "OUT", value: "OUT" }] },
+        { name: "quantity", label: "Quantity", type: "number" },
+        { name: "note", label: "Note", type: "text" },
     ];
 
     return (
@@ -129,9 +94,14 @@ const Transactions: React.FC = () => {
             />
 
             <EditPopup
+                popupName="Transaction"
                 open={openEdit}
                 onClose={() => setOpenEdit(false)}
-            // transaction={selectedTransaction}
+                fields={transactionFields}
+                initialData={selectedTransaction}
+                onSubmit={(values) => {
+                    confirmEdit(values);
+                }}
             />
 
             <DeletePopup

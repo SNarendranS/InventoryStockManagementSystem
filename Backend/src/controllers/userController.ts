@@ -20,6 +20,25 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
     next(error as Error)
   }
 };
+export const getUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {userid}=req.params
+    const user  = await User.findOne({
+      where:{userid},
+      attributes: ["userid", "name", "email", "role", "managerid", "createdAt"],
+      include: [{ model: User, as: "manager", attributes: ["name", "email", "role"] }],
+      order: [["createdAt", "DESC"]]
+    });
+    res.status(200).json({
+      user
+    }
+    );
+
+  } catch (error: unknown) {
+    console.log(error)
+    next(error as Error)
+  }
+};
 export const getAllManagers = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const { count, rows: users } = await User.findAndCountAll({
