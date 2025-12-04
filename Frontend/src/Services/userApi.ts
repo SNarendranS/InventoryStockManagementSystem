@@ -35,6 +35,17 @@ export const userApi = createApi({
     getUserById: builder.query<userRes, number>({
       query: (id) => `/user/id/${id}`,
     }),
+        editUser: builder.mutation<
+          any,
+          { id: number; body: Partial<User> }
+        >({
+          query: ({ id, body }) => ({
+            url: `/user/${id}`,
+            method: "PUT", 
+            body,
+          }),
+          // invalidatesTags: ["Products"], // invalidate relevant cache
+        }),
     deleteUser: builder.mutation<void, { id: number }>({
       query: ({ id }) => ({
         url: `/user/${id}`,
@@ -49,5 +60,6 @@ export const {
   useGetManagersQuery,
   useGetUsersByManagerQuery,
   useGetUserByIdQuery,
+  useEditUserMutation,
   useDeleteUserMutation
 } = userApi;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CircularProgress, IconButton, Typography } from "@mui/material";
-import { useDeleteProductMutation, useGetProductsQuery } from "../../Services/productApi";
+import { useDeleteProductMutation, useGetProductsQuery, useEditProductMutation } from "../../Services/productApi";
 import { useGetCategoriesQuery } from "../../Services/categoryApi";
 import type { Product } from "../../Interfaces/IProduct";
 import DataTable from "../../Components/DataTable";
@@ -20,12 +20,20 @@ const Products: React.FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     const [deleteProduct] = useDeleteProductMutation();
+    const [editProduct] = useEditProductMutation();
+
 
     const handleEdit = (product: Product) => {
         setSelectedProduct(product);
         setOpenEdit(true);
     };
-
+    const confirmEdit = (values: Partial<Product>) => {
+        if (selectedProduct) {
+            console.log(values)
+            editProduct({ id: selectedProduct.productid, body: { ...values } });
+            setOpenEdit(false);
+        }
+    };
     const handleDelete = (product: Product) => {
         setSelectedProduct(product);
         setOpenDelete(true);
@@ -80,7 +88,7 @@ const Products: React.FC = () => {
         { name: "price", label: "Price", type: "number" },
         { name: "quantity", label: "Stock Qty", type: "number" },
         {
-            name: "category",
+            name: "categoryid",
             label: "Category",
             type: "select",
             options: categories?.categories.map(c => ({
@@ -104,10 +112,11 @@ const Products: React.FC = () => {
                 open={openEdit}
                 onClose={() => setOpenEdit(false)}
                 fields={productFields}
-                initialData={selectedProduct}
-                onSubmit={(values) => {
-                    console.log("Updated product:", values);
-                    // Call your update API here
+                initialData={{
+                    ...selectedProduct,
+                    category: selectedProduct?.categoryid || ""
+                }} onSubmit={(values) => {
+                    confirmEdit(values)
                 }}
             />
 

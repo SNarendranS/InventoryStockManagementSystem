@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CircularProgress, IconButton, Typography } from "@mui/material";
-import { useDeleteUserMutation, useGetUsersQuery, useGetUsersByManagerQuery, useGetManagersQuery } from "../../Services/userApi";
+import { useDeleteUserMutation, useGetUsersQuery, useGetUsersByManagerQuery, useGetManagersQuery ,useEditUserMutation} from "../../Services/userApi";
 import type { User } from "../../Interfaces/IUser";
 import DataTable from "../../Components/DataTable";
 import EditPopup, { type FieldConfig } from "../../Components/EditPopup/EditPopup";
@@ -22,6 +22,7 @@ const Users: React.FC = () => {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const [deleteUser] = useDeleteUserMutation();
+    const [editUser]= useEditUserMutation();
     const navigate = useNavigate();
 
     const handleEdit = (u: User) => {
@@ -31,7 +32,13 @@ const Users: React.FC = () => {
             setOpenEdit(true);
         }
     };
-
+    const confirmEdit = (values: Partial<User>) => {
+        if (selectedUser) {
+            console.log(values)
+            editUser({ id: selectedUser.userid, body: { ...values } });
+            setOpenEdit(false);
+        }
+    };
     const handleDelete = (u: User) => {
         setSelectedUser(u);
         setOpenDelete(true);
@@ -79,12 +86,11 @@ const Users: React.FC = () => {
         ] : [])
     ];
 
-    // Dynamic fields for EditPopup
     const userFields: FieldConfig[] = [
         { name: "name", label: "Name", type: "text" },
         { name: "email", label: "Email", type: "text" },
         {
-            name: "manager", label: "Manager", type: "select", options: managers?.map(m => ({
+            name: "managerid", label: "Manager", type: "select", options: managers?.map(m => ({
                 label: m.name,
                 value: m.userid
             }))
@@ -113,9 +119,12 @@ const Users: React.FC = () => {
                 open={openEdit}
                 onClose={() => setOpenEdit(false)}
                 fields={userFields}
-                initialData={selectedUser}
+                initialData={{
+                    ...selectedUser,
+                    manager: selectedUser?.managerid || ""
+                }}
                 onSubmit={(values) => {
-                    console.log("Updated user:", values);
+                    confirmEdit(values);
                 }}
             />
 

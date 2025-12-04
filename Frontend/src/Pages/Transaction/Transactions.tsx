@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CircularProgress, IconButton, Typography } from "@mui/material";
-import { useDeleteTransactionMutation, useGetTransactionsQuery } from "../../Services/transactionApi";
-import type { Transaction } from "../../Interfaces/ITransaction";
+import { useDeleteTransactionMutation, useGetTransactionsQuery, useEditTransactionMutation } from "../../Services/transactionApi";
+import type { Transaction, TransactionType } from "../../Interfaces/ITransaction";
 import DataTable from "../../Components/DataTable";
 import EditPopup, { type FieldConfig } from "../../Components/EditPopup/EditPopup";
 import DeletePopup from "../../Components/DeletePopup/DeletePopup";
@@ -18,12 +18,18 @@ const Transactions: React.FC = () => {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
     const [deleteTransaction] = useDeleteTransactionMutation();
+    const [editTransaction] = useEditTransactionMutation();
 
     const handleEdit = (transaction: Transaction) => {
         setSelectedTransaction(transaction);
         setOpenEdit(true);
     };
-
+    const confirmEdit = (values: { type?: TransactionType; quantity?: number; note?: string }) => {
+        if (selectedTransaction) {
+            editTransaction({ id: selectedTransaction.transactionid, body: { ...values } });
+            setOpenEdit(false);
+        }
+    };
     const handleDelete = (transaction: Transaction) => {
         setSelectedTransaction(transaction);
         setOpenDelete(true);
@@ -94,7 +100,7 @@ const Transactions: React.FC = () => {
                 fields={transactionFields}
                 initialData={selectedTransaction}
                 onSubmit={(values) => {
-                    console.log("Updated transaction:", values);
+                    confirmEdit(values);
                 }}
             />
 
