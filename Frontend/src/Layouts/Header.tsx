@@ -45,7 +45,6 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.userToken.user);
 
-  // ---------------- NAV ITEMS ----------------
   const navItems = React.useMemo(() => {
     if (!user) return [];
 
@@ -239,7 +238,7 @@ const Header: React.FC = () => {
 
             <Tooltip title="Account Settings">
               <Avatar
-                sx={{ width: 38, height: 38, cursor: "pointer", border: `3px solid ${user.role == "admin" ? "green" : user.role == "manager" ? "orange" : "red"}` }}
+                sx={{ width: 38, height: 38, cursor: "pointer", border: `3px solid ${user?.role == "admin" ? "green" : user?.role == "manager" ? "orange" : "red"}` }}
                 onClick={handleAvatarClick}
                 src="https://i.pravatar.cc/80"
               />

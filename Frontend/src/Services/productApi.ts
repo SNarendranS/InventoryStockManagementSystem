@@ -16,41 +16,47 @@ export const productApi = createApi({
   endpoints: (builder) => ({
     getProducts: builder.query<GetProductsResponse, void>({
       query: () => "/product",
-      providesTags: ["Products"],
+      providesTags: [{ type: "Products", id: "LIST" }],
     }),
+
     getProductsByCategory: builder.query<GetProductsResponse, { categoryid: number }>({
       query: ({ categoryid }) => `/product/category/${categoryid}`,
-      providesTags: ["Products"],
+      providesTags: [{ type: "Products", id: "LIST" }],
     }),
+
     createProduct: builder.mutation<Product, Partial<Product>>({
       query: (body) => ({
         url: "/product",
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: [{ type: "Products", id: "LIST" }],
     }),
+
     getLowStockProducts: builder.query<GetProductsResponse, void>({
       query: () => "/product/stock/low",
-      providesTags: ["Products"],
+      providesTags: [{ type: "Products", id: "LIST" }],
     }),
+
     editProduct: builder.mutation<any, { id: number; body: Partial<Product> }>({
       query: ({ id, body }) => ({
         url: `/product/${id}`,
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: [{ type: "Products", id: "LIST" }],
     }),
+
     deleteProduct: builder.mutation<void, { id: number }>({
       query: ({ id }) => ({
         url: `/product/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Products"],
+      invalidatesTags: [{ type: "Products", id: "LIST" }],
     }),
   }),
 });
+
 
 
 export const { useGetProductsQuery, useCreateProductMutation, useGetProductsByCategoryQuery, useGetLowStockProductsQuery,useEditProductMutation, useDeleteProductMutation } = productApi;

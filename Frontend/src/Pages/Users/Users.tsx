@@ -12,9 +12,9 @@ import { useNavigate } from "react-router-dom";
 
 const Users: React.FC = () => {
     const user = useSelector((state: RootState) => state.userToken.user);
-    const { data, error, isLoading } = user.role === "admin"
+    const { data, error, isLoading } = user?.role === "admin"
         ? useGetUsersQuery()
-        : useGetUsersByManagerQuery(user.userid);
+        : useGetUsersByManagerQuery(user?.userid!);
     const { data: managersRes } = useGetManagersQuery();
     const managers = managersRes?.users || [];
     const [openEdit, setOpenEdit] = useState(false);
@@ -26,7 +26,7 @@ const Users: React.FC = () => {
     const navigate = useNavigate();
 
     const handleEdit = (u: User) => {
-        if (user.userid === u.userid) navigate("/profile");
+        if (user?.userid === u.userid) navigate("/profile");
         else {
             setSelectedUser(u);
             setOpenEdit(true);
@@ -62,7 +62,7 @@ const Users: React.FC = () => {
         { key: "manager.name", label: "Manager", render: (row: User) => row.manager?.name || "-" },
         { key: "manager.email", label: "Manager Email", render: (row: User) => row.manager?.email || "-" },
         { key: "createdAt", label: "Joining Date", render: (row: User) => new Date(row.createdAt).toLocaleDateString() },
-        ...(user.role === "admin" ? [
+        ...(user?.role === "admin" ? [
             {
                 key: "edit",
                 label: "Edit",

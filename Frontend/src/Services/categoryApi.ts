@@ -16,15 +16,16 @@ export const categoryApi = createApi({
   endpoints: (builder) => ({
     getCategories: builder.query<GetCategoryResponse, void>({
       query: () => "/category",
-      providesTags: ["Category"],
+      providesTags: [{ type: "Category", id: "LIST" }],
     }),
+
     createCategory: builder.mutation<Category, Partial<Category>>({
       query: (body) => ({
         url: "/category",
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Category"],
+      invalidatesTags: [{ type: "Category", id: "LIST" }],
     }),
   }),
 });

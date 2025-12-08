@@ -12,9 +12,12 @@ import Users from "../Pages/Users/Users";
 import AddUser from "../Pages/Users/AddUser";
 import Profile from "../Pages/Profile";
 import ReportsPage from "../Pages/ReportsPage";
+import { useSelector } from "react-redux";
+import type { RootState } from "../Store/store";
 
 const Body: React.FC = () => {
     const { pathname } = useLocation();
+    const user = useSelector((state: RootState) => state.userToken.user);
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -62,7 +65,7 @@ const Body: React.FC = () => {
                     }
                 />
                 <Route
-                    path="/view-employees"
+                    path={user?.role === "admin" ? "/view-employees" : "/your-team"}
                     element={
                         <Users />
                     }
@@ -97,7 +100,7 @@ const Body: React.FC = () => {
                         <ReportsPage />
                     }
                 />
-                         
+
             </Routes>
 
         </Box>
